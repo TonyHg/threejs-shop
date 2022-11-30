@@ -73,7 +73,6 @@ const Product: React.FC<ProductProps> = ({ isSelected = false }) => {
         .to({ z: 5 }, 250)
         .easing(TWEEN.Easing.Quadratic.Out)
         .onUpdate(() => {
-          console.log(coords);
           state.camera.position.set(0, 0, coords.z);
         })
         .start();

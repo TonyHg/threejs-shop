@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import './App.css';
 import Product from './components/products/product';
 
@@ -24,11 +24,19 @@ function App() {
 
   const [viewSelected, setViewSelected] = useState(false);
   const [cursor, setCursor] = useState<number | undefined>();
+  const listRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (cursor !== undefined) {
       location.hash = '#';
       location.hash = '#' + products[!viewSelected && cursor > 0 ? cursor - 1 : cursor].name;
+    }
+    if (listRef.current !== null) {
+      if (viewSelected && !listRef.current.classList.contains('scroll-smooth')) {
+        listRef.current.classList.add('scroll-smooth');
+      } else if (!viewSelected) {
+        listRef.current.classList.remove('scroll-smooth');
+      }
     }
   }, [viewSelected, cursor]);
 
@@ -36,7 +44,8 @@ function App() {
     <div
       className={`flex flex-nowrap h-screen w-screen bg-black ${
         viewSelected ? 'overflow-x-hidden' : 'overflow-x-auto'
-      }`}>
+      }`}
+      ref={listRef}>
       <div className="flex grow-0 shrink-0 basis-auto h-full w-full">
         <div className="flex h-full w-full justify-center items-center uppercase text-7xl">
           dolor sit amet
