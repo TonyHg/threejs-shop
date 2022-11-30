@@ -42,6 +42,22 @@ function App() {
           dolor sit amet
         </div>
       </div>
+      {products.map((product, index) => (
+        <div
+          key={index}
+          id={product.name}
+          className={`flex justify-center items-center grow-0 shrink-0 basis-auto border-white border-2 h-full ${
+            viewSelected ? 'w-full' : 'w-1/3'
+          }`}
+          onClick={() => {
+            if (!viewSelected) {
+              setViewSelected(true);
+              setCursor(index);
+            }
+          }}>
+          {index == 0 && <Product isSelected={viewSelected} />}
+        </div>
+      ))}
       {viewSelected && (
         <>
           <button
@@ -65,22 +81,6 @@ function App() {
           )}
         </>
       )}
-      {products.map((product, index) => (
-        <div
-          key={index}
-          id={product.name}
-          className={`flex justify-center items-center grow-0 shrink-0 basis-auto border-white border-2 h-full ${
-            viewSelected ? 'w-full' : 'w-1/3'
-          }`}
-          onClick={() => {
-            if (!viewSelected) {
-              setViewSelected(true);
-              setCursor(index);
-            }
-          }}>
-          {index == 0 && <Product />}
-        </div>
-      ))}
     </div>
   );
 }
