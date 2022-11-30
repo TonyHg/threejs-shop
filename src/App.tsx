@@ -61,13 +61,21 @@ function App() {
               setCursor(index);
             }
           }}>
-          <div className="flex p-10 h-full w-full justify-between items-center text-white">
+          <div className="flex p-10 h-full w-full justify-between items-center">
             {viewSelected && index !== 0 && (
-              <button onClick={() => setCursor(index - 1)}>&lt;</button>
+              <button
+                className="h-20 w-20 bg-white text-black p-5 rounded-full"
+                onClick={() => setCursor(index - 1)}>
+                &lt;
+              </button>
             )}
             {product.name}
             {viewSelected && index !== products.length - 1 && (
-              <button onClick={() => setCursor(index + 1)}>&gt;</button>
+              <button
+                className="h-20 w-20 bg-white text-black p-5 rounded-full"
+                onClick={() => setCursor(index + 1)}>
+                &gt;
+              </button>
             )}
           </div>
         </div>
