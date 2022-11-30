@@ -12,8 +12,10 @@
     "format": "prettier --write './**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc"
   },
   "dependencies": {
+    "@types/three": "^0.146.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "three": "^0.147.0"
   },
   "devDependencies": {
     "@types/react": "^18.0.24",

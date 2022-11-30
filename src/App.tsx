@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import './App.css';
+import Product from './components/products/product';
 
 function App() {
   const products = [
@@ -77,7 +78,7 @@ function App() {
               setCursor(index);
             }
           }}>
-          <div className="flex p-10 h-full w-full justify-center items-center">{product.name}</div>
+          {index == 0 && <Product />}
         </div>
       ))}
     </div>
