@@ -1,28 +1,85 @@
-import { useState } from 'react';
-import reactLogo from './assets/react.svg';
+import { useEffect, useState } from 'react';
 import './App.css';
 
 function App() {
-  const [count, setCount] = useState(0);
+  const products = [
+    { name: '1' },
+    { name: '2' },
+    { name: '3' },
+    { name: '4' },
+    { name: '5' },
+    { name: '6' },
+    { name: '7' },
+    { name: '8' },
+    { name: '9' },
+    { name: '10' },
+    { name: '11' },
+    { name: '12' },
+    { name: '13' },
+    { name: '14' },
+    { name: '15' },
+    { name: '16' }
+  ];
+
+  const [viewSelected, setViewSelected] = useState(false);
+  const [cursor, setCursor] = useState<number | undefined>();
+
+  useEffect(() => {
+    if (cursor !== undefined) {
+      location.hash = '#';
+      location.hash = '#' + products[!viewSelected && cursor > 0 ? cursor - 1 : cursor].name;
+    }
+  }, [viewSelected, cursor]);
 
   return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div
+      className={`flex flex-nowrap h-screen w-screen bg-black ${
+        viewSelected ? 'overflow-x-hidden' : 'overflow-x-auto'
+      }`}>
+      <div className="flex grow-0 shrink-0 basis-auto h-full w-full">
+        <div className="flex h-full w-full justify-center items-center uppercase text-7xl">
+          dolor sit amet
+        </div>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>count is {count}</button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">Click on the Vite and React logos to learn more</p>
+      {viewSelected && (
+        <>
+          <button
+            onClick={() => setViewSelected(false)}
+            className="absolute top-10 right-10 text-center rounded-lg bg-white text-black p-5">
+            back
+          </button>
+          {cursor && cursor !== 0 && (
+            <button
+              className="absolute top-1/2 left-10 h-20 w-20 bg-white text-black p-5 rounded-full"
+              onClick={() => setCursor(cursor - 1)}>
+              &lt;
+            </button>
+          )}
+          {cursor != null && cursor !== products.length - 1 && (
+            <button
+              className="absolute top-1/2 right-10 h-20 w-20 bg-white text-black p-5 rounded-full"
+              onClick={() => setCursor(cursor + 1)}>
+              &gt;
+            </button>
+          )}
+        </>
+      )}
+      {products.map((product, index) => (
+        <div
+          key={index}
+          id={product.name}
+          className={`flex justify-center items-center grow-0 shrink-0 basis-auto border-white border-2 h-full ${
+            viewSelected ? 'w-full' : 'w-1/3'
+          }`}
+          onClick={() => {
+            if (!viewSelected) {
+              setViewSelected(true);
+              setCursor(index);
+            }
+          }}>
+          <div className="flex p-10 h-full w-full justify-center items-center">{product.name}</div>
+        </div>
+      ))}
     </div>
   );
 }
