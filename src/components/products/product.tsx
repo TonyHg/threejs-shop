@@ -1,5 +1,15 @@
+import * as TWEEN from '@tweenjs/tween.js';
 import React, { useEffect, useRef, useState } from 'react';
-import { AmbientLight, Mesh, PerspectiveCamera, Scene, WebGLRenderer } from 'three';
+import {
+  AmbientLight,
+  BoxGeometry,
+  Mesh,
+  MeshBasicMaterial,
+  MeshPhysicalMaterial,
+  PerspectiveCamera,
+  Scene,
+  WebGLRenderer
+} from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
@@ -56,6 +66,18 @@ const Product: React.FC<ProductProps> = ({ isSelected = false }) => {
     if (state === undefined) return;
     state.controls.enabled = isSelected;
     if (isSelected === false) state.controls.reset();
+    if (isSelected) {
+      // state.camera.position.set(0, 0, 5);
+      const coords = { z: 10 };
+      new TWEEN.Tween(coords)
+        .to({ z: 5 }, 250)
+        .easing(TWEEN.Easing.Quadratic.Out)
+        .onUpdate(() => {
+          console.log(coords);
+          state.camera.position.set(0, 0, coords.z);
+        })
+        .start();
+    }
   }, [isSelected]);
 
   function animate(
@@ -75,6 +97,7 @@ const Product: React.FC<ProductProps> = ({ isSelected = false }) => {
 
     renderer.render(scene, camera);
     controls.update();
+    TWEEN.update();
     window.requestAnimationFrame(() => animate(renderer, container, scene, camera, controls));
   }
 
