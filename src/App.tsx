@@ -42,11 +42,27 @@ function App() {
         </div>
       </div>
       {viewSelected && (
-        <button
-          onClick={() => setViewSelected(false)}
-          className="absolute top-10 right-10 text-center rounded-lg bg-white text-black p-5">
-          back
-        </button>
+        <>
+          <button
+            onClick={() => setViewSelected(false)}
+            className="absolute top-10 right-10 text-center rounded-lg bg-white text-black p-5">
+            back
+          </button>
+          {cursor && cursor !== 0 && (
+            <button
+              className="absolute top-1/2 left-10 h-20 w-20 bg-white text-black p-5 rounded-full"
+              onClick={() => setCursor(cursor - 1)}>
+              &lt;
+            </button>
+          )}
+          {cursor != null && cursor !== products.length - 1 && (
+            <button
+              className="absolute top-1/2 right-10 h-20 w-20 bg-white text-black p-5 rounded-full"
+              onClick={() => setCursor(cursor + 1)}>
+              &gt;
+            </button>
+          )}
+        </>
       )}
       {products.map((product, index) => (
         <div
@@ -61,23 +77,7 @@ function App() {
               setCursor(index);
             }
           }}>
-          <div className="flex p-10 h-full w-full justify-between items-center">
-            {viewSelected && index !== 0 && (
-              <button
-                className="h-20 w-20 bg-white text-black p-5 rounded-full"
-                onClick={() => setCursor(index - 1)}>
-                &lt;
-              </button>
-            )}
-            {product.name}
-            {viewSelected && index !== products.length - 1 && (
-              <button
-                className="h-20 w-20 bg-white text-black p-5 rounded-full"
-                onClick={() => setCursor(index + 1)}>
-                &gt;
-              </button>
-            )}
-          </div>
+          <div className="flex p-10 h-full w-full justify-center items-center">{product.name}</div>
         </div>
       ))}
     </div>
