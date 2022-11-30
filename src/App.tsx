@@ -21,10 +21,16 @@ function App() {
   ];
 
   return (
-    <div className="h-screen w-screen whitespace-nowrap overflow-x-scroll">
-      <div className="h-full w-full inline-block bg-red-500">test</div>
+    <div className="flex flex-nowrap h-screen w-screen overflow-x-auto bg-black">
+      <div className="flex grow-0 shrink-0 basis-auto h-full w-full">
+        <div className="flex h-full w-full justify-center items-center uppercase text-7xl">
+          dolor sit amet
+        </div>
+      </div>
       {products.map((product, index) => (
-        <div key={index} className="h-full w-1/3 inline-block bg-blue-500">
+        <div
+          key={index}
+          className="flex justify-center items-center  grow-0 shrink-0 basis-auto border-white border-2 h-full w-1/3">
           {product.name}
         </div>
       ))}
