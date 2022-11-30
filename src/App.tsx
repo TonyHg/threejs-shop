@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import './App.css';
 
 function App() {
@@ -20,18 +21,55 @@ function App() {
     { name: '16' }
   ];
 
+  const [viewSelected, setViewSelected] = useState(false);
+  const [cursor, setCursor] = useState<number | undefined>();
+
+  useEffect(() => {
+    if (cursor !== undefined) {
+      location.hash = '#';
+      location.hash = '#' + products[!viewSelected && cursor > 0 ? cursor - 1 : cursor].name;
+    }
+  }, [viewSelected, cursor]);
+
   return (
-    <div className="flex flex-nowrap h-screen w-screen overflow-x-auto bg-black">
+    <div
+      className={`flex flex-nowrap h-screen w-screen bg-black ${
+        viewSelected ? 'overflow-x-hidden' : 'overflow-x-auto'
+      }`}>
       <div className="flex grow-0 shrink-0 basis-auto h-full w-full">
         <div className="flex h-full w-full justify-center items-center uppercase text-7xl">
           dolor sit amet
         </div>
       </div>
+      {viewSelected && (
+        <button
+          onClick={() => setViewSelected(false)}
+          className="absolute top-10 right-10 text-center rounded-lg bg-white text-black p-5">
+          back
+        </button>
+      )}
       {products.map((product, index) => (
         <div
           key={index}
-          className="flex justify-center items-center  grow-0 shrink-0 basis-auto border-white border-2 h-full w-1/3">
-          {product.name}
+          id={product.name}
+          className={`flex justify-center items-center grow-0 shrink-0 basis-auto border-white border-2 h-full ${
+            viewSelected ? 'w-full' : 'w-1/3'
+          }`}
+          onClick={() => {
+            if (!viewSelected) {
+              setViewSelected(true);
+              setCursor(index);
+            }
+          }}>
+          <div className="flex p-10 h-full w-full justify-between items-center text-white">
+            {viewSelected && index !== 0 && (
+              <button onClick={() => setCursor(index - 1)}>&lt;</button>
+            )}
+            {product.name}
+            {viewSelected && index !== products.length - 1 && (
+              <button onClick={() => setCursor(index + 1)}>&gt;</button>
+            )}
+          </div>
         </div>
       ))}
     </div>
