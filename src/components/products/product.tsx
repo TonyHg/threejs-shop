@@ -28,6 +28,8 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass';
+import { SSRPass } from 'three/examples/jsm/postprocessing/SSRPass';
+import { ReflectorForSSRPass } from 'three/examples/jsm/objects/ReflectorForSSRPass';
 
 interface ProductProps {
   isSelected?: boolean;
@@ -176,18 +178,6 @@ const Product: React.FC<ProductProps> = ({ isSelected = false }) => {
       controls.minPolarAngle = Math.PI / 2;
       controls.maxPolarAngle = Math.PI / 2;
 
-      //#region EFFECTS
-      const effectComposer = new EffectComposer(renderer);
-      effectComposer.addPass(new RenderPass(scene, camera));
-      const bloomPass = new UnrealBloomPass(
-        new Vector2(window.innerWidth, window.innerHeight),
-        1.5,
-        0.4,
-        0.4
-      );
-      effectComposer.addPass(bloomPass);
-      //#endregion
-
       //#region LIGHTS
       const ambientLight = new AmbientLight(0xffffff, 0.1);
       scene.add(ambientLight);
@@ -219,6 +209,19 @@ const Product: React.FC<ProductProps> = ({ isSelected = false }) => {
       plane.position.set(0, -1, 0);
       scene.add(plane);
 
+      const groundReflector = new ReflectorForSSRPass(new PlaneGeometry(20, 20), {
+        clipBias: 0.0003,
+        textureWidth: window.innerWidth,
+        textureHeight: window.innerHeight,
+        color: 0x888888,
+        useDepthTexture: true
+      });
+      groundReflector.material.depthWrite = false;
+      groundReflector.rotation.x = -Math.PI / 2;
+      groundReflector.position.y = -1;
+      groundReflector.receiveShadow = true;
+
+      scene.add(groundReflector);
       const glassMaterial = new MeshPhysicalMaterial({
         color: 0xff00ff,
         roughness: 0.4,
@@ -272,6 +275,30 @@ const Product: React.FC<ProductProps> = ({ isSelected = false }) => {
       }).then(() => {
         setLoading(false);
       });
+      //#endregion
+
+      //#region EFFECTS
+      const effectComposer = new EffectComposer(renderer);
+      effectComposer.addPass(new RenderPass(scene, camera));
+
+      const ssrPass = new SSRPass({
+        renderer,
+        scene,
+        camera,
+        width: window.innerWidth,
+        height: window.innerHeight,
+        groundReflector: groundReflector,
+        selects: null
+      });
+      effectComposer.addPass(ssrPass);
+
+      const bloomPass = new UnrealBloomPass(
+        new Vector2(window.innerWidth, window.innerHeight),
+        1.5,
+        0.4,
+        0.4
+      );
+      effectComposer.addPass(bloomPass);
       //#endregion
 
       setState({ renderer, container, scene, camera, controls, descriptionCard });
