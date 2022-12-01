@@ -25,11 +25,11 @@ import {
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { ReflectorForSSRPass } from 'three/examples/jsm/objects/ReflectorForSSRPass';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
-import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass';
 import { SSRPass } from 'three/examples/jsm/postprocessing/SSRPass';
-import { ReflectorForSSRPass } from 'three/examples/jsm/objects/ReflectorForSSRPass';
+import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass';
 
 interface ProductProps {
   isSelected?: boolean;
@@ -80,12 +80,14 @@ interface CanvasState {
   camera: PerspectiveCamera;
   controls: OrbitControls;
   descriptionCard: Mesh;
+  neons: LineSegments[];
 }
 
 const Product: React.FC<ProductProps> = ({ isSelected = false }) => {
   const refContainer = useRef(null);
   const [state, setState] = useState<CanvasState>();
   const [loading, setLoading] = useState(true);
+  let [prevX, prevY] = [-2, -2];
 
   useEffect(() => {
     if (state === undefined) return;
@@ -117,6 +119,17 @@ const Product: React.FC<ProductProps> = ({ isSelected = false }) => {
         state.camera.position.y + y * 0.5,
         state.camera.position.z + x * 0.5
       );
+
+      const translationX = x - prevX;
+      const translationY = y - prevY;
+      state.neons.forEach((neon) => {
+        const position = neon.position;
+        const distance = new Vector2(x, y).distanceTo(new Vector2(position.x, position.y));
+        console.log(distance);
+        neon.rotateX(translationY / distance);
+        neon.rotateY(translationX / distance);
+      });
+      [prevX, prevY] = [x, y];
     };
     window.addEventListener('mousemove', onMouseMoveCard);
     return () => {
@@ -246,22 +259,15 @@ const Product: React.FC<ProductProps> = ({ isSelected = false }) => {
         descriptionCard.add(planeText);
       });
 
-      const neonCubeGeomerty = new EdgesGeometry(new BoxGeometry(1, 2, 1));
-      for (let i = 0; i < 20; i++) {
-        let color = 0xffffff;
-        const random = Math.random();
-        if (random <= 0.25) color = 0x00ff00;
-        else if (random <= 0.5) color = 0x8800ff;
-        const neon = new LineSegments(
-          neonCubeGeomerty,
-          new LineBasicMaterial({ color: color, linewidth: 3 })
-        );
-        neon.position.set(
-          randomMinMax(-10, 10, true),
-          randomMinMax(-1, 5, true),
-          randomMinMax(-20, -10, true)
-        );
-        neon.rotation.set(0, randomMinMax(0, Math.PI / 2), randomMinMax(0, Math.PI / 2, true));
+      const neons: LineSegments[] = [];
+      const neonGeomerty = new EdgesGeometry(new BoxGeometry(1, 3, 1));
+      const neonMaterial = new LineBasicMaterial({ color: 'white', linewidth: 3 });
+      const nbNeon = 15;
+      for (let i = 0; i < nbNeon; i++) {
+        const neon = new LineSegments(neonGeomerty, neonMaterial);
+        neon.position.set(i - nbNeon / 2, randomMinMax(-1, 3, true), randomMinMax(-20, -10, true));
+        neon.rotation.set(0, randomMinMax(0, Math.PI / 2), randomMinMax(0, Math.PI / 3, true));
+        neons.push(neon);
         camera.add(neon);
       }
 
@@ -290,7 +296,7 @@ const Product: React.FC<ProductProps> = ({ isSelected = false }) => {
         groundReflector: groundReflector,
         selects: null
       });
-      effectComposer.addPass(ssrPass);
+      //effectComposer.addPass(ssrPass);
 
       const bloomPass = new UnrealBloomPass(
         new Vector2(window.innerWidth, window.innerHeight),
@@ -301,7 +307,7 @@ const Product: React.FC<ProductProps> = ({ isSelected = false }) => {
       effectComposer.addPass(bloomPass);
       //#endregion
 
-      setState({ renderer, container, scene, camera, controls, descriptionCard });
+      setState({ renderer, container, scene, camera, controls, descriptionCard, neons });
 
       animate(renderer, container, scene, camera, controls, effectComposer);
     }
