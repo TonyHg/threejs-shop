@@ -24,50 +24,17 @@ import {
 } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { ReflectorForSSRPass } from 'three/examples/jsm/objects/ReflectorForSSRPass';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
 import { SSRPass } from 'three/examples/jsm/postprocessing/SSRPass';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass';
 import randomMinMax from '../../utils/common/random-min-max';
+import loadGLTFModel from '../../utils/three/load-gltf-model';
 import recursiveDispose from '../../utils/three/recursive-dipose';
 
 interface ProductProps {
   isSelected?: boolean;
-}
-
-async function loadGLTFModel(
-  scene: Scene,
-  glbPath: string,
-  options: { receiveShadow: boolean; castShadow: boolean }
-) {
-  const { receiveShadow, castShadow } = options;
-
-  const loader = new GLTFLoader();
-  loader.load(
-    glbPath,
-    (gltf) => {
-      const obj = gltf.scene;
-      obj.receiveShadow = receiveShadow;
-      obj.castShadow = castShadow;
-      obj.rotateY(Math.PI);
-      scene.add(obj);
-
-      obj.traverse(function (child) {
-        if (child instanceof Mesh) {
-          child.castShadow = castShadow;
-          child.receiveShadow = receiveShadow;
-        }
-      });
-
-      return obj;
-    },
-    undefined,
-    function (error) {
-      console.log(error);
-    }
-  );
 }
 
 interface CanvasState {
