@@ -2,15 +2,21 @@ import * as TWEEN from '@tweenjs/tween.js';
 import React, { useEffect, useRef, useState } from 'react';
 import {
   AmbientLight,
-  BoxGeometry,
+  DirectionalLight,
+  DoubleSide,
   Mesh,
   MeshBasicMaterial,
   MeshPhysicalMaterial,
   PerspectiveCamera,
+  PlaneGeometry,
+  PointLight,
+  PointLightHelper,
   Scene,
+  TextureLoader,
   WebGLRenderer
 } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 interface ProductProps {
@@ -31,6 +37,7 @@ async function loadGLTFModel(
       const obj = gltf.scene;
       obj.receiveShadow = receiveShadow;
       obj.castShadow = castShadow;
+      obj.rotateY(Math.PI);
       scene.add(obj);
 
       obj.traverse(function (child) {
@@ -112,14 +119,52 @@ const Product: React.FC<ProductProps> = ({ isSelected = false }) => {
       const scene = new Scene();
       const camera = new PerspectiveCamera();
       camera.position.set(0, 0, 10);
-      const ambientLight = new AmbientLight(0xffffff, 1);
-      scene.add(ambientLight);
       const controls = new OrbitControls(camera, renderer.domElement);
       controls.autoRotate = true;
       controls.autoRotateSpeed = -10;
-      controls.enabled = false;
+      controls.enabled = true;
 
-      loadGLTFModel(scene, '/products/japanese_mask.glb', {
+      const ambientLight = new AmbientLight(0xffffff, 0.7);
+      scene.add(ambientLight);
+      const directionalLight = new DirectionalLight(0xffffff, 1);
+      directionalLight.position.set(10, 10, 10);
+      directionalLight.castShadow = true;
+      camera.add(directionalLight);
+
+      const orangePointLight = new PointLight(0xffaa55, 0.7);
+      orangePointLight.position.set(1, 0, -5);
+      const greenPointLight = new PointLight(0x55ff55, 0.4);
+      orangePointLight.position.set(-2, 0, 1);
+      camera.add(orangePointLight);
+      scene.add(greenPointLight);
+
+      const glassMaterial = new MeshPhysicalMaterial({
+        color: 0xff00ff,
+        roughness: 0.6,
+        transmission: 0.9
+      });
+      glassMaterial.thickness = 0.5;
+      const card = new Mesh(new RoundedBoxGeometry(1, 0.5, 0.05, 10, 1), glassMaterial);
+      card.position.set(0.75, 0.25, -1.5);
+
+      const loader = new TextureLoader();
+      loader.load('/products/descriptions/japanese_mask.png', function (texture) {
+        const geometry = new PlaneGeometry(1, 0.5);
+        const material = new MeshBasicMaterial({
+          map: texture,
+          transparent: true,
+          side: DoubleSide
+        });
+        const planeText = new Mesh(geometry, material);
+        planeText.position.set(0, 0, 0.05);
+        card.add(planeText);
+      });
+
+      card.lookAt(camera.position);
+      camera.add(card);
+      scene.add(camera);
+
+      loadGLTFModel(scene, '/products/models/japanese_mask.glb', {
         receiveShadow: true,
         castShadow: true
       }).then(() => {
