@@ -11,8 +11,10 @@ import {
   PlaneGeometry,
   PointLight,
   PointLightHelper,
+  Raycaster,
   Scene,
   TextureLoader,
+  Vector3,
   WebGLRenderer
 } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
@@ -62,6 +64,7 @@ interface State {
   scene: Scene;
   camera: PerspectiveCamera;
   controls: OrbitControls;
+  descriptionCard: Mesh;
 }
 
 const Product: React.FC<ProductProps> = ({ isSelected = false }) => {
@@ -85,6 +88,23 @@ const Product: React.FC<ProductProps> = ({ isSelected = false }) => {
         .start();
     }
   }, [isSelected]);
+
+  useEffect(() => {
+    const onMouseMoveCard = (event: MouseEvent) => {
+      if (state === undefined) return;
+      const x = (event.clientX / window.innerWidth) * 2 - 1;
+      const y = -(event.clientY / window.innerHeight) * 2 + 1;
+      state.descriptionCard.lookAt(
+        state.camera.position.x + x * 0.5,
+        state.camera.position.y + y * 0.5,
+        state.camera.position.z + x * 0.5
+      );
+    };
+    window.addEventListener('mousemove', onMouseMoveCard);
+    return () => {
+      window.removeEventListener('mousemove', onMouseMoveCard);
+    };
+  }, [state?.camera, state?.descriptionCard]);
 
   function animate(
     renderer: WebGLRenderer,
@@ -123,6 +143,11 @@ const Product: React.FC<ProductProps> = ({ isSelected = false }) => {
       controls.autoRotate = true;
       controls.autoRotateSpeed = -10;
       controls.enabled = true;
+      controls.enablePan = false;
+      controls.minDistance = 3;
+      controls.maxDistance = 8;
+      controls.minPolarAngle = Math.PI / 2;
+      controls.maxPolarAngle = Math.PI / 2;
 
       const ambientLight = new AmbientLight(0xffffff, 0.7);
       scene.add(ambientLight);
@@ -144,8 +169,9 @@ const Product: React.FC<ProductProps> = ({ isSelected = false }) => {
         transmission: 0.9
       });
       glassMaterial.thickness = 0.5;
-      const card = new Mesh(new RoundedBoxGeometry(1, 0.5, 0.05, 10, 1), glassMaterial);
-      card.position.set(0.75, 0.25, -1.5);
+
+      const descriptionCard = new Mesh(new RoundedBoxGeometry(1, 0.5, 0.05, 10, 1), glassMaterial);
+      descriptionCard.position.set(0.75, 0.25, -1.5);
 
       const loader = new TextureLoader();
       loader.load('/products/descriptions/japanese_mask.png', function (texture) {
@@ -157,11 +183,11 @@ const Product: React.FC<ProductProps> = ({ isSelected = false }) => {
         });
         const planeText = new Mesh(geometry, material);
         planeText.position.set(0, 0, 0.05);
-        card.add(planeText);
+        descriptionCard.add(planeText);
       });
 
-      card.lookAt(camera.position);
-      camera.add(card);
+      descriptionCard.lookAt(camera.position);
+      camera.add(descriptionCard);
       scene.add(camera);
 
       loadGLTFModel(scene, '/products/models/japanese_mask.glb', {
@@ -171,7 +197,7 @@ const Product: React.FC<ProductProps> = ({ isSelected = false }) => {
         setLoading(false);
       });
 
-      setState({ renderer, container, scene, camera, controls });
+      setState({ renderer, container, scene, camera, controls, descriptionCard });
 
       animate(renderer, container, scene, camera, controls);
     }
