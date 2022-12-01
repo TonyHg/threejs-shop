@@ -147,7 +147,7 @@ const Product: React.FC<ProductProps> = ({ isSelected = false }) => {
       const controls = new OrbitControls(camera, renderer.domElement);
       controls.autoRotate = true;
       controls.autoRotateSpeed = -10;
-      controls.enabled = true;
+      controls.enabled = false;
       controls.enablePan = false;
       controls.minDistance = 3;
       controls.maxDistance = 8;
@@ -174,7 +174,7 @@ const Product: React.FC<ProductProps> = ({ isSelected = false }) => {
       scene.add(greenPointLight);
 
       const topLight = new SpotLight(0xffffff, 1);
-      topLight.position.set(0, 10, 5);
+      topLight.position.set(0, 8, 5);
       topLight.castShadow = true;
       scene.add(topLight);
 
