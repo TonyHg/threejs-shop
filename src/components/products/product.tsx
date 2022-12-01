@@ -75,9 +75,7 @@ const Product: React.FC<ProductProps> = ({ isSelected = false }) => {
   useEffect(() => {
     if (state === undefined) return;
     state.controls.enabled = isSelected;
-    if (isSelected === false) state.controls.reset();
     if (isSelected) {
-      // state.camera.position.set(0, 0, 5);
       const coords = { z: 10 };
       new TWEEN.Tween(coords)
         .to({ z: 5 }, 250)
@@ -86,6 +84,11 @@ const Product: React.FC<ProductProps> = ({ isSelected = false }) => {
           state.camera.position.set(0, 0, coords.z);
         })
         .start();
+
+      state.descriptionCard.visible = true;
+    } else {
+      state.controls.reset();
+      state.descriptionCard.visible = false;
     }
   }, [isSelected]);
 
@@ -186,6 +189,7 @@ const Product: React.FC<ProductProps> = ({ isSelected = false }) => {
 
       const descriptionCard = new Mesh(new RoundedBoxGeometry(1, 0.5, 0.05, 10, 1), glassMaterial);
       descriptionCard.position.set(0.75, 0.25, -1.5);
+      descriptionCard.visible = false;
 
       const loader = new TextureLoader();
       loader.load('/products/descriptions/japanese_mask.png', function (texture) {
