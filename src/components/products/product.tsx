@@ -30,6 +30,7 @@ import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
 import { SSRPass } from 'three/examples/jsm/postprocessing/SSRPass';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass';
+import recursiveDispose from '../../utils/three/recursive-dipose';
 
 interface ProductProps {
   isSelected?: boolean;
@@ -313,6 +314,15 @@ const Product: React.FC<ProductProps> = ({ isSelected = false }) => {
     }
     return () => state?.renderer.dispose();
   }, [state?.renderer]);
+
+  // ON UNMOUNT
+  useEffect(() => {
+    return () => {
+      state?.renderer.dispose();
+      if (state?.scene) recursiveDispose(state.scene);
+      state?.controls.dispose();
+    };
+  }, []);
 
   return (
     <div className="relative h-full w-full" ref={refContainer}>
