@@ -2,9 +2,13 @@ import * as TWEEN from '@tweenjs/tween.js';
 import React, { useEffect, useRef, useState } from 'react';
 import {
   AmbientLight,
+  BoxGeometry,
   DirectionalLight,
   DoubleSide,
+  EdgesGeometry,
   Fog,
+  LineBasicMaterial,
+  LineSegments,
   Mesh,
   MeshBasicMaterial,
   MeshPhysicalMaterial,
@@ -15,14 +19,23 @@ import {
   PointLight,
   Scene,
   TextureLoader,
+  Vector2,
   WebGLRenderer
 } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
+import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass';
 
 interface ProductProps {
   isSelected?: boolean;
+}
+
+function randomMinMax(min: number, max: number, decimal = false): number {
+  if (!decimal) return Math.floor(Math.random() * (max - min + 1) + min);
+  return Math.random() * (max - min) + min;
 }
 
 async function loadGLTFModel(
@@ -114,20 +127,24 @@ const Product: React.FC<ProductProps> = ({ isSelected = false }) => {
     container: HTMLDivElement,
     scene: Scene,
     camera: PerspectiveCamera,
-    controls: OrbitControls
+    controls: OrbitControls,
+    effectComposer: EffectComposer
   ) {
     if (renderer === undefined) return;
     const scW = container.clientWidth;
     const scH = container.clientHeight;
-    renderer?.setSize(scW, scH);
 
     camera.aspect = scW / scH;
     camera.updateProjectionMatrix();
 
-    renderer.render(scene, camera);
+    renderer?.setSize(scW, scH);
+    effectComposer.setSize(scW, scH);
+    effectComposer.render();
     controls.update();
     TWEEN.update();
-    window.requestAnimationFrame(() => animate(renderer, container, scene, camera, controls));
+    window.requestAnimationFrame(() =>
+      animate(renderer, container, scene, camera, controls, effectComposer)
+    );
   }
 
   useEffect(() => {
@@ -144,7 +161,7 @@ const Product: React.FC<ProductProps> = ({ isSelected = false }) => {
 
       // SCENE
       const scene = new Scene();
-      scene.fog = new Fog(0x000000, 0.015, 25);
+      scene.fog = new Fog(0x000000, 10, 25);
       // CAMERA
       const camera = new PerspectiveCamera();
       camera.position.set(0, 0, 10);
@@ -159,11 +176,23 @@ const Product: React.FC<ProductProps> = ({ isSelected = false }) => {
       controls.minPolarAngle = Math.PI / 2;
       controls.maxPolarAngle = Math.PI / 2;
 
+      //#region EFFECTS
+      const effectComposer = new EffectComposer(renderer);
+      effectComposer.addPass(new RenderPass(scene, camera));
+      const bloomPass = new UnrealBloomPass(
+        new Vector2(window.innerWidth, window.innerHeight),
+        1.5,
+        0.4,
+        0.4
+      );
+      effectComposer.addPass(bloomPass);
+      //#endregion
+
       //#region LIGHTS
-      const ambientLight = new AmbientLight(0xffffff, 0.4);
+      const ambientLight = new AmbientLight(0xffffff, 0.1);
       scene.add(ambientLight);
 
-      const directionalLight = new DirectionalLight(0xffffff, 1);
+      const directionalLight = new DirectionalLight(0xffffff, 0.5);
       directionalLight.position.set(10, 10, 10);
       directionalLight.castShadow = true;
       directionalLight.shadow.mapSize.width = 1024;
@@ -214,6 +243,25 @@ const Product: React.FC<ProductProps> = ({ isSelected = false }) => {
         descriptionCard.add(planeText);
       });
 
+      const neonCubeGeomerty = new EdgesGeometry(new BoxGeometry(1, 2, 1));
+      for (let i = 0; i < 20; i++) {
+        let color = 0xffffff;
+        const random = Math.random();
+        if (random <= 0.25) color = 0x00ff00;
+        else if (random <= 0.5) color = 0x8800ff;
+        const neon = new LineSegments(
+          neonCubeGeomerty,
+          new LineBasicMaterial({ color: color, linewidth: 3 })
+        );
+        neon.position.set(
+          randomMinMax(-10, 10, true),
+          randomMinMax(-1, 5, true),
+          randomMinMax(-20, -10, true)
+        );
+        neon.rotation.set(0, randomMinMax(0, Math.PI / 2), randomMinMax(0, Math.PI / 2, true));
+        camera.add(neon);
+      }
+
       descriptionCard.lookAt(camera.position);
       camera.add(descriptionCard);
       scene.add(camera);
@@ -228,7 +276,7 @@ const Product: React.FC<ProductProps> = ({ isSelected = false }) => {
 
       setState({ renderer, container, scene, camera, controls, descriptionCard });
 
-      animate(renderer, container, scene, camera, controls);
+      animate(renderer, container, scene, camera, controls, effectComposer);
     }
     return () => state?.renderer.dispose();
   }, [state?.renderer]);
