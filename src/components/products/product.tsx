@@ -91,7 +91,7 @@ const Product: React.FC<ProductProps> = ({ isSelected = false }) => {
     if (isSelected) {
       const coords = { z: 10 };
       new TWEEN.Tween(coords)
-        .to({ z: 5 }, 250)
+        .to({ z: 4 }, 250)
         .easing(TWEEN.Easing.Quadratic.Out)
         .onUpdate(() => {
           state.camera.position.set(0, 0, coords.z);
@@ -212,11 +212,11 @@ const Product: React.FC<ProductProps> = ({ isSelected = false }) => {
       //#region MESHES
       const plane = new Mesh(
         new PlaneGeometry(200, 200),
-        new MeshStandardMaterial({ color: 0x222222, side: DoubleSide })
+        new MeshStandardMaterial({ color: 0x090524, side: DoubleSide })
       );
       plane.receiveShadow = true;
       plane.rotateX(Math.PI / 2);
-      plane.position.set(0, -1.5, 0);
+      plane.position.set(0, -1, 0);
       scene.add(plane);
 
       const glassMaterial = new MeshPhysicalMaterial({
