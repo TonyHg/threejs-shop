@@ -30,15 +30,11 @@ import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
 import { SSRPass } from 'three/examples/jsm/postprocessing/SSRPass';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass';
+import randomMinMax from '../../utils/common/random-min-max';
 import recursiveDispose from '../../utils/three/recursive-dipose';
 
 interface ProductProps {
   isSelected?: boolean;
-}
-
-function randomMinMax(min: number, max: number, decimal = false): number {
-  if (!decimal) return Math.floor(Math.random() * (max - min + 1) + min);
-  return Math.random() * (max - min) + min;
 }
 
 async function loadGLTFModel(
