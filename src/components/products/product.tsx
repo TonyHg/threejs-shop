@@ -2,19 +2,19 @@ import * as TWEEN from '@tweenjs/tween.js';
 import React, { useEffect, useRef, useState } from 'react';
 import {
   AmbientLight,
-  DirectionalLight,
   DoubleSide,
+  Fog,
   Mesh,
   MeshBasicMaterial,
   MeshPhysicalMaterial,
+  MeshStandardMaterial,
+  PCFSoftShadowMap,
   PerspectiveCamera,
   PlaneGeometry,
   PointLight,
-  PointLightHelper,
-  Raycaster,
   Scene,
+  SpotLight,
   TextureLoader,
-  Vector3,
   WebGLRenderer
 } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
@@ -134,6 +134,8 @@ const Product: React.FC<ProductProps> = ({ isSelected = false }) => {
         antialias: true,
         alpha: true
       });
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = PCFSoftShadowMap;
       container.appendChild(renderer.domElement);
 
       const scene = new Scene();
@@ -149,12 +151,17 @@ const Product: React.FC<ProductProps> = ({ isSelected = false }) => {
       controls.minPolarAngle = Math.PI / 2;
       controls.maxPolarAngle = Math.PI / 2;
 
-      const ambientLight = new AmbientLight(0xffffff, 0.7);
+      const ambientLight = new AmbientLight(0xffffff, 0.2);
       scene.add(ambientLight);
-      const directionalLight = new DirectionalLight(0xffffff, 1);
-      directionalLight.position.set(10, 10, 10);
-      directionalLight.castShadow = true;
-      camera.add(directionalLight);
+
+      const plane = new Mesh(
+        new PlaneGeometry(200, 200),
+        new MeshStandardMaterial({ color: 0x222222, side: DoubleSide })
+      );
+      plane.receiveShadow = true;
+      plane.rotateX(Math.PI / 2);
+      plane.position.set(0, -1.5, 0);
+      scene.add(plane);
 
       const orangePointLight = new PointLight(0xffaa55, 0.7);
       orangePointLight.position.set(1, 0, -5);
@@ -162,6 +169,13 @@ const Product: React.FC<ProductProps> = ({ isSelected = false }) => {
       orangePointLight.position.set(-2, 0, 1);
       camera.add(orangePointLight);
       scene.add(greenPointLight);
+
+      const topLight = new SpotLight(0xffffff, 1);
+      topLight.position.set(0, 10, 5);
+      topLight.castShadow = true;
+      scene.add(topLight);
+
+      scene.fog = new Fog(0x000000, 0.015, 25);
 
       const glassMaterial = new MeshPhysicalMaterial({
         color: 0xff00ff,
