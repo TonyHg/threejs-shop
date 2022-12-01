@@ -2,6 +2,7 @@ import * as TWEEN from '@tweenjs/tween.js';
 import React, { useEffect, useRef, useState } from 'react';
 import {
   AmbientLight,
+  DirectionalLight,
   DoubleSide,
   Fog,
   Mesh,
@@ -154,8 +155,16 @@ const Product: React.FC<ProductProps> = ({ isSelected = false }) => {
       controls.minPolarAngle = Math.PI / 2;
       controls.maxPolarAngle = Math.PI / 2;
 
-      const ambientLight = new AmbientLight(0xffffff, 0.2);
+      const ambientLight = new AmbientLight(0xffffff, 0.4);
       scene.add(ambientLight);
+      const directionalLight = new DirectionalLight(0xffffff, 1);
+      directionalLight.position.set(0, 10, 10);
+      directionalLight.castShadow = true;
+      directionalLight.shadow.mapSize.width = 1024;
+      directionalLight.shadow.mapSize.height = 1024;
+      directionalLight.shadow.camera.near = 0.5;
+      directionalLight.shadow.camera.far = 500;
+      scene.add(directionalLight);
 
       const plane = new Mesh(
         new PlaneGeometry(200, 200),
@@ -173,17 +182,12 @@ const Product: React.FC<ProductProps> = ({ isSelected = false }) => {
       camera.add(orangePointLight);
       scene.add(greenPointLight);
 
-      const topLight = new SpotLight(0xffffff, 1);
-      topLight.position.set(0, 8, 5);
-      topLight.castShadow = true;
-      scene.add(topLight);
-
       scene.fog = new Fog(0x000000, 0.015, 25);
 
       const glassMaterial = new MeshPhysicalMaterial({
         color: 0xff00ff,
-        roughness: 0.6,
-        transmission: 0.9
+        roughness: 0.4,
+        transmission: 0.99
       });
       glassMaterial.thickness = 0.5;
 
