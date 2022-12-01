@@ -14,7 +14,6 @@ import {
   PlaneGeometry,
   PointLight,
   Scene,
-  SpotLight,
   TextureLoader,
   WebGLRenderer
 } from 'three';
@@ -59,7 +58,7 @@ async function loadGLTFModel(
   );
 }
 
-interface State {
+interface CanvasState {
   renderer: WebGLRenderer;
   container: HTMLDivElement;
   scene: Scene;
@@ -70,7 +69,7 @@ interface State {
 
 const Product: React.FC<ProductProps> = ({ isSelected = false }) => {
   const refContainer = useRef(null);
-  const [state, setState] = useState<State>();
+  const [state, setState] = useState<CanvasState>();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
