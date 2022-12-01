@@ -133,6 +133,7 @@ const Product: React.FC<ProductProps> = ({ isSelected = false }) => {
   useEffect(() => {
     const container = refContainer.current as unknown as HTMLDivElement;
     if (container !== null && !state?.renderer && container.children.length === 1) {
+      // RENDERER
       const renderer = new WebGLRenderer({
         antialias: true,
         alpha: true
@@ -141,9 +142,13 @@ const Product: React.FC<ProductProps> = ({ isSelected = false }) => {
       renderer.shadowMap.type = PCFSoftShadowMap;
       container.appendChild(renderer.domElement);
 
+      // SCENE
       const scene = new Scene();
+      scene.fog = new Fog(0x000000, 0.015, 25);
+      // CAMERA
       const camera = new PerspectiveCamera();
       camera.position.set(0, 0, 10);
+      //CONTROLS
       const controls = new OrbitControls(camera, renderer.domElement);
       controls.autoRotate = true;
       controls.autoRotateSpeed = -10;
@@ -154,17 +159,28 @@ const Product: React.FC<ProductProps> = ({ isSelected = false }) => {
       controls.minPolarAngle = Math.PI / 2;
       controls.maxPolarAngle = Math.PI / 2;
 
+      //#region LIGHTS
       const ambientLight = new AmbientLight(0xffffff, 0.4);
       scene.add(ambientLight);
+
       const directionalLight = new DirectionalLight(0xffffff, 1);
-      directionalLight.position.set(0, 10, 10);
+      directionalLight.position.set(10, 10, 10);
       directionalLight.castShadow = true;
       directionalLight.shadow.mapSize.width = 1024;
       directionalLight.shadow.mapSize.height = 1024;
       directionalLight.shadow.camera.near = 0.5;
       directionalLight.shadow.camera.far = 500;
-      scene.add(directionalLight);
+      camera.add(directionalLight);
 
+      const orangePointLight = new PointLight(0xffaa55, 0.7);
+      orangePointLight.position.set(1, 0, -5);
+      const greenPointLight = new PointLight(0x55ff55, 0.4);
+      orangePointLight.position.set(-2, 0, 1);
+      camera.add(orangePointLight);
+      camera.add(greenPointLight);
+      //#endregion
+
+      //#region MESHES
       const plane = new Mesh(
         new PlaneGeometry(200, 200),
         new MeshStandardMaterial({ color: 0x222222, side: DoubleSide })
@@ -173,15 +189,6 @@ const Product: React.FC<ProductProps> = ({ isSelected = false }) => {
       plane.rotateX(Math.PI / 2);
       plane.position.set(0, -1.5, 0);
       scene.add(plane);
-
-      const orangePointLight = new PointLight(0xffaa55, 0.7);
-      orangePointLight.position.set(1, 0, -5);
-      const greenPointLight = new PointLight(0x55ff55, 0.4);
-      orangePointLight.position.set(-2, 0, 1);
-      camera.add(orangePointLight);
-      scene.add(greenPointLight);
-
-      scene.fog = new Fog(0x000000, 0.015, 25);
 
       const glassMaterial = new MeshPhysicalMaterial({
         color: 0xff00ff,
@@ -217,6 +224,7 @@ const Product: React.FC<ProductProps> = ({ isSelected = false }) => {
       }).then(() => {
         setLoading(false);
       });
+      //#endregion
 
       setState({ renderer, container, scene, camera, controls, descriptionCard });
 
