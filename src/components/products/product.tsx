@@ -296,7 +296,7 @@ const Product: React.FC<ProductProps> = ({ isSelected = false }) => {
   }, []);
 
   return (
-    <div className="relative h-full w-full" ref={refContainer}>
+    <div className="relative h-full w-full select-none" ref={refContainer}>
       {loading && (
         <span className="text-white" style={{ position: 'absolute', left: '50%', top: '50%' }}>
           Loading...
