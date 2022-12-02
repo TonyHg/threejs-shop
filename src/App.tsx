@@ -43,7 +43,7 @@ function App() {
   return (
     <div
       className={`flex flex-nowrap h-screen w-screen bg-black ${
-        viewSelected ? 'overflow-x-hidden' : 'overflow-x-auto'
+        viewSelected ? 'overflow-x-hidden' : 'overflow-x-auto py-10 gap-10'
       }`}
       ref={listRef}>
       <div className="flex grow-0 shrink-0 basis-auto h-full w-full">
@@ -55,8 +55,8 @@ function App() {
         <div
           key={index}
           id={product.name}
-          className={`flex justify-center items-center grow-0 shrink-0 basis-auto border-white border-0 h-full ${
-            viewSelected ? 'w-full' : 'w-1/3'
+          className={`flex justify-center items-center grow-0 shrink-0 basis-auto h-full ${
+            viewSelected ? 'w-full' : 'w-1/3 rounded-lg border-white border-2 overflow-hidden'
           }`}
           onClick={() => {
             if (!viewSelected) {
@@ -65,14 +65,14 @@ function App() {
             }
           }}>
           {index == 0 && <Product isSelected={viewSelected} />}
-          {index == 1 && <Product isSelected={viewSelected} />}
+          {/* {index == 1 && <Product isSelected={viewSelected} />} */}
         </div>
       ))}
       {viewSelected && (
         <>
           <button
             onClick={() => setViewSelected(false)}
-            className="absolute top-10 right-10 text-center rounded-lg bg-white text-black p-5">
+            className="absolute top-10 left-10 text-center rounded-lg bg-white text-black p-5">
             back
           </button>
           {cursor && cursor !== 0 && (

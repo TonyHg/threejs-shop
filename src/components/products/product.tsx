@@ -90,7 +90,7 @@ const Product: React.FC<ProductProps> = ({ isSelected = false }) => {
         const position = neon.position;
         const distance = new Vector2(x, y).distanceTo(new Vector2(position.x, position.y));
         console.log(distance);
-        neon.rotateX(translationY / distance);
+        neon.rotateX(-translationY / distance);
         neon.rotateY(translationX / distance);
       });
       [prevX, prevY] = [x, y];
@@ -197,8 +197,8 @@ const Product: React.FC<ProductProps> = ({ isSelected = false }) => {
       groundReflector.rotation.x = -Math.PI / 2;
       groundReflector.position.y = -1;
       groundReflector.receiveShadow = true;
-
       scene.add(groundReflector);
+
       const glassMaterial = new MeshPhysicalMaterial({
         color: 0xff00ff,
         roughness: 0.4,
@@ -206,20 +206,25 @@ const Product: React.FC<ProductProps> = ({ isSelected = false }) => {
       });
       glassMaterial.thickness = 0.5;
 
-      const descriptionCard = new Mesh(new RoundedBoxGeometry(1, 0.5, 0.05, 10, 1), glassMaterial);
+      const descriptionCardSize = { width: 1, height: 0.5, depth: 0.05 };
+      const descriptionCard = new Mesh(
+        new RoundedBoxGeometry(
+          descriptionCardSize.width,
+          descriptionCardSize.height,
+          descriptionCardSize.depth,
+          10,
+          1
+        ),
+        glassMaterial
+      );
       descriptionCard.position.set(0.75, 0.25, -1.5);
       descriptionCard.visible = false;
 
-      const loader = new TextureLoader();
-      loader.load('/products/descriptions/japanese_mask.png', function (texture) {
-        const geometry = new PlaneGeometry(1, 0.5);
-        const material = new MeshBasicMaterial({
-          map: texture,
-          transparent: true,
-          side: DoubleSide
-        });
+      new TextureLoader().load('/products/descriptions/japanese_mask.png', function (texture) {
+        const geometry = new PlaneGeometry(descriptionCardSize.width, descriptionCardSize.height);
+        const material = new MeshBasicMaterial({ map: texture, transparent: true });
         const planeText = new Mesh(geometry, material);
-        planeText.position.set(0, 0, 0.05);
+        planeText.position.set(0, 0, descriptionCardSize.depth / 2);
         descriptionCard.add(planeText);
       });
 
@@ -229,13 +234,16 @@ const Product: React.FC<ProductProps> = ({ isSelected = false }) => {
       const nbNeon = 15;
       for (let i = 0; i < nbNeon; i++) {
         const neon = new LineSegments(neonGeomerty, neonMaterial);
-        neon.position.set(i - nbNeon / 2, randomMinMax(-1, 3, true), randomMinMax(-20, -10, true));
-        neon.rotation.set(0, randomMinMax(0, Math.PI / 2), randomMinMax(0, Math.PI / 3, true));
+        neon.position.set(
+          (i - nbNeon / 2) * (nbNeon / 10),
+          randomMinMax(-1, 3, true),
+          randomMinMax(-20, -10, true)
+        );
+        neon.rotation.set(0, randomMinMax(0, Math.PI / 2), 0);
         neons.push(neon);
         camera.add(neon);
       }
 
-      descriptionCard.lookAt(camera.position);
       camera.add(descriptionCard);
       scene.add(camera);
 
