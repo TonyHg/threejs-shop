@@ -224,7 +224,7 @@ const Product: React.FC<ProductProps> = ({ isSelected = false }) => {
         const geometry = new PlaneGeometry(descriptionCardSize.width, descriptionCardSize.height);
         const material = new MeshBasicMaterial({ map: texture, transparent: true });
         const planeText = new Mesh(geometry, material);
-        planeText.position.set(0, 0, descriptionCardSize.depth / 2);
+        planeText.position.set(0, 0, descriptionCardSize.depth / 2 + 0.001);
         descriptionCard.add(planeText);
       });
 
