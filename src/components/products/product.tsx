@@ -2,10 +2,8 @@ import * as TWEEN from '@tweenjs/tween.js';
 import React, { useEffect, useRef, useState } from 'react';
 import {
   AmbientLight,
-  BoxGeometry,
   DirectionalLight,
   DoubleSide,
-  EdgesGeometry,
   Fog,
   LineBasicMaterial,
   LineSegments,
@@ -17,6 +15,7 @@ import {
   PerspectiveCamera,
   PlaneGeometry,
   PointLight,
+  RingGeometry,
   Scene,
   TextureLoader,
   Vector2,
@@ -29,7 +28,6 @@ import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
 import { SSRPass } from 'three/examples/jsm/postprocessing/SSRPass';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass';
-import randomMinMax from '../../utils/common/random-min-max';
 import loadGLTFModel from '../../utils/three/load-gltf-model';
 import recursiveDispose from '../../utils/three/recursive-dipose';
 
@@ -44,14 +42,12 @@ interface CanvasState {
   camera: PerspectiveCamera;
   controls: OrbitControls;
   descriptionCard: Mesh;
-  neons: LineSegments[];
 }
 
 const Product: React.FC<ProductProps> = ({ isSelected = false }) => {
   const refContainer = useRef(null);
   const [state, setState] = useState<CanvasState>();
   const [loading, setLoading] = useState(true);
-  let [prevX, prevY] = [-2, -2];
 
   useEffect(() => {
     if (state === undefined) return;
@@ -83,17 +79,6 @@ const Product: React.FC<ProductProps> = ({ isSelected = false }) => {
         state.camera.position.y + y * 0.5,
         state.camera.position.z + x * 0.5
       );
-
-      const translationX = x - prevX;
-      const translationY = y - prevY;
-      state.neons.forEach((neon) => {
-        const position = neon.position;
-        const distance = new Vector2(x, y).distanceTo(new Vector2(position.x, position.y));
-        console.log(distance);
-        neon.rotateX(-translationY / distance);
-        neon.rotateY(translationX / distance);
-      });
-      [prevX, prevY] = [x, y];
     };
     window.addEventListener('mousemove', onMouseMoveCard);
     return () => {
@@ -219,6 +204,8 @@ const Product: React.FC<ProductProps> = ({ isSelected = false }) => {
       );
       descriptionCard.position.set(0.75, 0.25, -1.5);
       descriptionCard.visible = false;
+      camera.add(descriptionCard);
+      scene.add(camera);
 
       new TextureLoader().load('/products/descriptions/japanese_mask.png', function (texture) {
         const geometry = new PlaneGeometry(descriptionCardSize.width, descriptionCardSize.height);
@@ -228,24 +215,12 @@ const Product: React.FC<ProductProps> = ({ isSelected = false }) => {
         descriptionCard.add(planeText);
       });
 
-      const neons: LineSegments[] = [];
-      const neonGeomerty = new EdgesGeometry(new BoxGeometry(1, 3, 1));
-      const neonMaterial = new LineBasicMaterial({ color: 'white', linewidth: 3 });
-      const nbNeon = 15;
-      for (let i = 0; i < nbNeon; i++) {
-        const neon = new LineSegments(neonGeomerty, neonMaterial);
-        neon.position.set(
-          (i - nbNeon / 2) * (nbNeon / 10),
-          randomMinMax(-1, 3, true),
-          randomMinMax(-20, -10, true)
-        );
-        neon.rotation.set(0, randomMinMax(0, Math.PI / 2), 0);
-        neons.push(neon);
-        camera.add(neon);
-      }
-
-      camera.add(descriptionCard);
-      scene.add(camera);
+      const neon = new LineSegments(
+        new RingGeometry(2.5, 2.65, 100, 100),
+        new LineBasicMaterial({ color: 'white', linewidth: 3 })
+      );
+      neon.position.set(0, 1, -10);
+      camera.add(neon);
 
       loadGLTFModel(scene, '/products/models/japanese_mask.glb', {
         receiveShadow: true,
@@ -273,13 +248,13 @@ const Product: React.FC<ProductProps> = ({ isSelected = false }) => {
       const bloomPass = new UnrealBloomPass(
         new Vector2(window.innerWidth, window.innerHeight),
         1.5,
-        0.4,
+        0.5,
         0.4
       );
       effectComposer.addPass(bloomPass);
       //#endregion
 
-      setState({ renderer, container, scene, camera, controls, descriptionCard, neons });
+      setState({ renderer, container, scene, camera, controls, descriptionCard });
 
       animate(renderer, container, scene, camera, controls, effectComposer);
     }
