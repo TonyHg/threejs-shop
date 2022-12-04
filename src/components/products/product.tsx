@@ -35,7 +35,6 @@ interface ProductProps {
   name: string;
   scale?: number;
   shouldTouchTheGround?: boolean;
-  shouldFloat?: boolean;
   isSelected?: boolean;
 }
 
@@ -53,7 +52,6 @@ const Product: React.FC<ProductProps> = ({
   name,
   scale = 1,
   shouldTouchTheGround = false,
-  shouldFloat = true,
   isSelected = false
 }) => {
   const refContainer = useRef(null);
@@ -65,7 +63,7 @@ const Product: React.FC<ProductProps> = ({
   const [animationFrameId, setAnimationFrameId] = useState<number>();
 
   useEffect(() => {
-    if (state && shouldFloat && productModel !== undefined) {
+    if (state && !shouldTouchTheGround && productModel !== undefined) {
       if (animationFrameId) window.cancelAnimationFrame(animationFrameId);
 
       animate(
@@ -136,7 +134,7 @@ const Product: React.FC<ProductProps> = ({
     camera.aspect = scW / scH;
     camera.updateProjectionMatrix();
 
-    if (shouldFloat && productModel !== undefined) {
+    if (!shouldTouchTheGround && productModel !== undefined) {
       productModel.position.y = Math.sin(clock.getElapsedTime() * 0.8) * 0.2 + 1.5;
     }
     renderer?.setSize(scW, scH);
