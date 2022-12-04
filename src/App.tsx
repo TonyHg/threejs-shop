@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import './App.css';
 import Product from './components/products/product';
+import Landing from './components/landing/landing';
 
 function App() {
   const products = [
@@ -47,9 +48,7 @@ function App() {
       }`}
       ref={listRef}>
       <div className="flex grow-0 shrink-0 basis-auto h-full w-full">
-        <div className="flex h-full w-full justify-center items-center uppercase text-7xl">
-          dolor sit amet
-        </div>
+        <Landing />
       </div>
       {products.map((product, index) => (
         <div
