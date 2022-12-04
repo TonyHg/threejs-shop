@@ -4,6 +4,7 @@ import {
   AmbientLight,
   Clock,
   DirectionalLight,
+  Euler,
   Fog,
   Group,
   LineBasicMaterial,
@@ -24,16 +25,17 @@ import {
 } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry';
+import { Reflector } from 'three/examples/jsm/objects/Reflector';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass';
 import loadGLTFModel from '../../utils/three/load-gltf-model';
 import recursiveDispose from '../../utils/three/recursive-dipose';
-import { Reflector } from 'three/examples/jsm/objects/Reflector';
 
 interface ProductProps {
   name: string;
   scale?: number;
+  rotation?: Euler;
   shouldTouchTheGround?: boolean;
   isSelected?: boolean;
 }
@@ -51,6 +53,7 @@ interface CanvasState {
 const Product: React.FC<ProductProps> = ({
   name,
   scale = 1,
+  rotation,
   shouldTouchTheGround = false,
   isSelected = false
 }) => {
@@ -267,6 +270,7 @@ const Product: React.FC<ProductProps> = ({
         `products/models/${name}.glb`,
         {
           scale: scale,
+          rotation: rotation,
           shouldTouchTheGround: shouldTouchTheGround,
           receiveShadow: true,
           castShadow: true
