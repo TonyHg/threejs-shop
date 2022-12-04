@@ -5,7 +5,7 @@ interface LandingProps {
 }
 const Landing: React.FC<LandingProps> = ({ listRef }) => {
   return (
-    <div className="flex h-full w-full justify-center items-center uppercase text-7xl relative">
+    <div className="flex h-full w-full justify-center items-center uppercase text-7xl relative select-none">
       <div className="uppercase flex flex-col font-bold justify-center items-center">
         <span className="text-base">Welcome to the</span>
         <h1>
