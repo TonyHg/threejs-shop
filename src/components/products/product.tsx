@@ -30,6 +30,7 @@ import recursiveDispose from '../../utils/three/recursive-dipose';
 import { Reflector } from 'three/examples/jsm/objects/Reflector';
 
 interface ProductProps {
+  name: string;
   isSelected?: boolean;
 }
 
@@ -42,7 +43,7 @@ interface CanvasState {
   descriptionCard: Mesh;
 }
 
-const Product: React.FC<ProductProps> = ({ isSelected = false }) => {
+const Product: React.FC<ProductProps> = ({ name, isSelected = false }) => {
   const refContainer = useRef(null);
   const [state, setState] = useState<CanvasState>();
   const [loading, setLoading] = useState(true);
@@ -207,7 +208,7 @@ const Product: React.FC<ProductProps> = ({ isSelected = false }) => {
       camera.add(descriptionCard);
       scene.add(camera);
 
-      new TextureLoader().load('/products/descriptions/japanese_mask.png', function (texture) {
+      new TextureLoader().load(`products/descriptions/${name}.png`, function (texture) {
         const geometry = new PlaneGeometry(descriptionCardSize.width, descriptionCardSize.height);
         const material = new MeshBasicMaterial({ map: texture, transparent: true });
         const planeText = new Mesh(geometry, material);
@@ -222,7 +223,7 @@ const Product: React.FC<ProductProps> = ({ isSelected = false }) => {
       neon.position.set(0, 1, -10);
       camera.add(neon);
 
-      loadGLTFModel(scene, '/products/models/japanese_mask.glb', {
+      loadGLTFModel(scene, `products/models/${name}.glb`, {
         receiveShadow: true,
         castShadow: true
       }).then(() => {

@@ -4,22 +4,22 @@ import Product from './components/products/product';
 
 function App() {
   const products = [
-    { name: '1' },
-    { name: '2' },
-    { name: '3' },
-    { name: '4' },
-    { name: '5' },
-    { name: '6' },
-    { name: '7' },
-    { name: '8' },
-    { name: '9' },
-    { name: '10' },
-    { name: '11' },
-    { name: '12' },
-    { name: '13' },
-    { name: '14' },
-    { name: '15' },
-    { name: '16' }
+    { id: 1, name: 'japanese_mask' },
+    { id: 2, name: '2' },
+    { id: 3, name: '3' },
+    { id: 4, name: '4' },
+    { id: 5, name: '5' },
+    { id: 6, name: '6' },
+    { id: 7, name: '7' },
+    { id: 8, name: '8' },
+    { id: 9, name: '9' },
+    { id: 10, name: '10' },
+    { id: 11, name: '11' },
+    { id: 12, name: '12' },
+    { id: 13, name: '13' },
+    { id: 14, name: '14' },
+    { id: 15, name: '15' },
+    { id: 16, name: '16' }
   ];
 
   const [viewSelected, setViewSelected] = useState(false);
@@ -27,10 +27,10 @@ function App() {
   const listRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (cursor !== undefined) {
-      location.hash = '#';
-      location.hash = '#' + products[!viewSelected && cursor > 0 ? cursor - 1 : cursor].name;
-    }
+    location.hash = '';
+    if (cursor != null)
+      location.hash = products[!viewSelected && cursor > 0 ? cursor - 1 : cursor].name;
+
     if (listRef.current !== null) {
       if (viewSelected && !listRef.current.classList.contains('scroll-smooth')) {
         listRef.current.classList.add('scroll-smooth');
@@ -64,8 +64,7 @@ function App() {
               setCursor(index);
             }
           }}>
-          {index == 0 && <Product isSelected={viewSelected} />}
-          {/* {index == 1 && <Product isSelected={viewSelected} />} */}
+          {index == 0 && <Product name={product.name} isSelected={viewSelected} />}
         </div>
       ))}
       {viewSelected && (
