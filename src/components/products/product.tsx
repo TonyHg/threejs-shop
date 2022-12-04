@@ -200,20 +200,27 @@ const Product: React.FC<ProductProps> = ({
       scene.add(ambientLight);
 
       const directionalLight = new DirectionalLight(0xffffff, 0.5);
-      directionalLight.position.set(10, 10, 10);
+      directionalLight.position.set(5, 5, 5);
       directionalLight.castShadow = true;
       directionalLight.shadow.mapSize.width = 1024;
       directionalLight.shadow.mapSize.height = 1024;
-      directionalLight.shadow.camera.near = 0.5;
-      directionalLight.shadow.camera.far = 500;
+      directionalLight.shadow.camera.near = 10;
+      directionalLight.shadow.camera.far = 40;
+      directionalLight.shadow.camera.top = 4;
+      directionalLight.shadow.camera.right = 2;
+      directionalLight.shadow.camera.bottom = -1;
+      directionalLight.shadow.camera.left = -2;
       camera.add(directionalLight);
 
-      const orangePointLight = new PointLight(0xffaa55, 0.7);
-      orangePointLight.position.set(1, 0, -5);
+      const orangePointLight = new PointLight(0xffaa55, 0.3);
+      orangePointLight.position.set(5, 5, -5);
       const greenPointLight = new PointLight(0x55ff55, 0.4);
-      orangePointLight.position.set(-2, 0, 1);
+      greenPointLight.position.set(-5, 5, -1);
+      const whitePointLight = new PointLight(0xffffff, 0.5);
+      whitePointLight.position.set(0, -10, 0);
       camera.add(orangePointLight);
       camera.add(greenPointLight);
+      camera.add(whitePointLight);
       //#endregion
 
       //#region MESHES
