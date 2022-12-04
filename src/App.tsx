@@ -14,22 +14,22 @@ interface Product {
 
 function App() {
   const products: Product[] = [
-    { id: 1, name: 'japanese_mask', rotation: new Euler(0, -Math.PI) },
-    { id: 2, name: 'crystal_stone' },
-    { id: 3, name: 'futurist_drone', rotation: new Euler(0, -Math.PI / 2) },
-    { id: 4, name: 'mosquito_in_amber', scale: 0.02 },
-    { id: 5, name: 'ship_in_a_bottle', shouldTouchTheGround: true },
-    { id: 6, name: 'spider_tank', shouldTouchTheGround: true },
-    { id: 7, name: 'techno_watch' },
-    { id: 8, name: 'venice_mask', scale: 50 },
-    { id: 9, name: 'terrarium_bots', scale: 0.09, shouldTouchTheGround: true },
-    { id: 10, name: 'dark_scuba' },
-    { id: 11, name: 'cursed_gameboy', shouldTouchTheGround: true },
-    { id: 12, name: 'lord_inquisitor_skull', scale: 0.02 },
-    { id: 13, name: '13' },
-    { id: 14, name: '14' },
-    { id: 15, name: '15' },
-    { id: 16, name: '16' }
+    { id: 1, name: 'japanese_mask', scale: 1.5, rotation: new Euler(0, -Math.PI) },
+    { id: 2, name: 'crystal_stone', scale: 50 },
+    { id: 3, name: 'covid_pills', scale: 10 },
+    { id: 4, name: 'apollos_shield' },
+    { id: 5, name: 'time_orb' },
+    { id: 6, name: 'spider_tank', scale: 0.01, shouldTouchTheGround: true },
+    { id: 7, name: 'venice_mask', scale: 50 },
+    { id: 8, name: 'techno_watch', rotation: new Euler(0, 0, -Math.PI / 3) },
+    { id: 9, name: 'scepter', scale: 0.005 },
+    { id: 10, name: 'yellow_gameboy', scale: 1.7 },
+    { id: 11, name: 'mysterious_book', scale: 0.01, rotation: new Euler(0, 0, Math.PI / 3) },
+    { id: 12, name: 'terrarium_bots', scale: 0.1, shouldTouchTheGround: true },
+    { id: 13, name: 'steampunk_gun', scale: 0.07 },
+    { id: 14, name: 'mayan_column', scale: 0.25, shouldTouchTheGround: true },
+    { id: 15, name: 'jade_sword', scale: 0.05 },
+    { id: 16, name: 'stone_coffin', scale: 0.02, rotation: new Euler(-Math.PI / 2.5) }
   ];
 
   const [viewSelected, setViewSelected] = useState(false);
@@ -72,7 +72,7 @@ function App() {
               setCursor(index);
             }
           }}>
-          {index >= 0 && index <= 3 && (
+          {index === cursor && (
             <Product
               name={product.name}
               scale={product.scale}

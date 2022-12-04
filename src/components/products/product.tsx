@@ -61,6 +61,7 @@ const Product: React.FC<ProductProps> = ({
   const refContainer = useRef(null);
   const [state, setState] = useState<CanvasState>();
   const [productModel, setProductModel] = useState<Group>();
+  const [modelYPosition, setModelYPostion] = useState(0);
   const [clock] = useState<Clock>(new Clock());
   const [loading, setLoading] = useState(true);
   const [loadingProgress, setLoadingProgress] = useState(0);
@@ -78,10 +79,11 @@ const Product: React.FC<ProductProps> = ({
         state.camera,
         state.controls,
         state.effectComposer,
-        productModel
+        productModel,
+        modelYPosition
       );
     }
-  }, [productModel]);
+  }, [productModel, modelYPosition]);
 
   useEffect(() => {
     if (state === undefined) return;
@@ -129,7 +131,8 @@ const Product: React.FC<ProductProps> = ({
     camera: PerspectiveCamera,
     controls: OrbitControls,
     effectComposer: EffectComposer,
-    productModel: Group | undefined
+    productModel: Group | undefined,
+    modelYPosition: number
   ) {
     if (renderer === undefined) return;
     const scW = container.clientWidth;
@@ -139,7 +142,7 @@ const Product: React.FC<ProductProps> = ({
     camera.updateProjectionMatrix();
 
     if (!shouldTouchTheGround && productModel !== undefined) {
-      productModel.position.y = Math.sin(clock.getElapsedTime() * 0.8) * 0.2 + 1.5;
+      productModel.position.y = Math.sin(clock.getElapsedTime() * 0.8) * 0.2 + modelYPosition;
     }
     renderer?.setSize(scW, scH);
     effectComposer.setSize(scW, scH);
@@ -148,7 +151,17 @@ const Product: React.FC<ProductProps> = ({
     TWEEN.update();
     setAnimationFrameId(
       window.requestAnimationFrame(() =>
-        animate(clock, renderer, container, scene, camera, controls, effectComposer, productModel)
+        animate(
+          clock,
+          renderer,
+          container,
+          scene,
+          camera,
+          controls,
+          effectComposer,
+          productModel,
+          modelYPosition
+        )
       )
     );
   }
@@ -188,20 +201,27 @@ const Product: React.FC<ProductProps> = ({
       scene.add(ambientLight);
 
       const directionalLight = new DirectionalLight(0xffffff, 0.5);
-      directionalLight.position.set(10, 10, 10);
+      directionalLight.position.set(5, 5, 5);
       directionalLight.castShadow = true;
       directionalLight.shadow.mapSize.width = 1024;
       directionalLight.shadow.mapSize.height = 1024;
-      directionalLight.shadow.camera.near = 0.5;
-      directionalLight.shadow.camera.far = 500;
+      directionalLight.shadow.camera.near = 10;
+      directionalLight.shadow.camera.far = 40;
+      directionalLight.shadow.camera.top = 4;
+      directionalLight.shadow.camera.right = 2;
+      directionalLight.shadow.camera.bottom = -1;
+      directionalLight.shadow.camera.left = -2;
       camera.add(directionalLight);
 
-      const orangePointLight = new PointLight(0xffaa55, 0.7);
-      orangePointLight.position.set(1, 0, -5);
+      const orangePointLight = new PointLight(0xffaa55, 0.3);
+      orangePointLight.position.set(5, 5, -5);
       const greenPointLight = new PointLight(0x55ff55, 0.4);
-      orangePointLight.position.set(-2, 0, 1);
+      greenPointLight.position.set(-5, 5, -1);
+      const whitePointLight = new PointLight(0xffffff, 0.5);
+      whitePointLight.position.set(0, -10, 0);
       camera.add(orangePointLight);
       camera.add(greenPointLight);
+      camera.add(whitePointLight);
       //#endregion
 
       //#region MESHES
@@ -215,7 +235,7 @@ const Product: React.FC<ProductProps> = ({
       );
       plane.receiveShadow = true;
       plane.rotation.x = -Math.PI / 2;
-      plane.position.y = 0.1;
+      plane.position.y = 0.001;
       scene.add(plane);
 
       const groundMirror = new Reflector(new PlaneGeometry(200, 200), {
@@ -276,7 +296,10 @@ const Product: React.FC<ProductProps> = ({
           receiveShadow: true,
           castShadow: true
         },
-        (model) => setProductModel(model),
+        (model) => {
+          setProductModel(model);
+          setModelYPostion(model.position.y);
+        },
         (xhr) => setLoadingProgress((xhr.loaded / xhr.total) * 100)
       ).then(() => {
         setLoading(false);
@@ -298,7 +321,17 @@ const Product: React.FC<ProductProps> = ({
 
       setState({ renderer, container, scene, camera, controls, effectComposer, descriptionCard });
 
-      animate(clock, renderer, container, scene, camera, controls, effectComposer, undefined);
+      animate(
+        clock,
+        renderer,
+        container,
+        scene,
+        camera,
+        controls,
+        effectComposer,
+        productModel,
+        modelYPosition
+      );
     }
     return () => state?.renderer.dispose();
   }, [state?.renderer]);

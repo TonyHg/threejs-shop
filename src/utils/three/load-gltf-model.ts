@@ -27,7 +27,7 @@ async function loadGLTFModel(
       if (options.rotation) obj.rotation.copy(options.rotation);
       const objBB = new Box3().setFromObject(obj);
       if (options.shouldTouchTheGround) obj.position.y = -objBB.min.y;
-      else obj.position.y = -objBB.min.y + 0.2;
+      else obj.position.y = -objBB.min.y + 0.5;
       scene.add(obj);
 
       obj.traverse(function (child) {
