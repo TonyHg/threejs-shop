@@ -90,7 +90,7 @@ const Product: React.FC<ProductProps> = ({
         .to({ z: 4 }, 250)
         .easing(TWEEN.Easing.Quadratic.Out)
         .onUpdate(() => {
-          state.camera.position.set(0, 0, coords.z);
+          state.camera.position.z = coords.z;
         })
         .start();
 
@@ -212,7 +212,7 @@ const Product: React.FC<ProductProps> = ({
       );
       plane.receiveShadow = true;
       plane.rotation.x = -Math.PI / 2;
-      plane.position.y = -1.9;
+      plane.position.y = 0.1;
       scene.add(plane);
 
       const groundMirror = new Reflector(new PlaneGeometry(200, 200), {
