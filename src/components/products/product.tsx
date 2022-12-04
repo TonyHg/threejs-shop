@@ -3,7 +3,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import {
   AmbientLight,
   Clock,
-  Color,
   DirectionalLight,
   Euler,
   Fog,
@@ -285,6 +284,7 @@ const Product: React.FC<ProductProps> = ({
 
       //#region EFFECTS
       const effectComposer = new EffectComposer(renderer);
+      effectComposer.setSize(window.innerWidth, window.innerHeight);
       effectComposer.addPass(new RenderPass(scene, camera));
 
       const bloomPass = new UnrealBloomPass(
@@ -306,11 +306,15 @@ const Product: React.FC<ProductProps> = ({
   // ON UNMOUNT
   useEffect(() => {
     return () => {
-      state?.renderer.dispose();
-      if (state?.scene) recursiveDispose(state.scene);
-      state?.controls.dispose();
+      if (state) {
+        // recursiveDispose(state.scene);
+        state.scene.clear();
+        state.controls.dispose();
+        state.effectComposer.dispose();
+        state.renderer.dispose();
+      }
     };
-  }, []);
+  }, [state]);
 
   return (
     <div className="relative h-full w-full select-none" ref={refContainer}>

@@ -31,10 +31,10 @@ function App() {
     { id: 15, name: '15' },
     { id: 16, name: '16' }
   ];
-
   const [viewSelected, setViewSelected] = useState(false);
   const [cursor, setCursor] = useState<number | undefined>();
   const listRef = useRef<HTMLDivElement>(null);
+  const [productIdx, setProductIdx] = useState(0);
 
   useEffect(() => {
     location.hash = '';
@@ -49,6 +49,17 @@ function App() {
       }
     }
   }, [viewSelected, cursor]);
+
+  useEffect(() => {
+    if (listRef.current !== null) {
+      listRef.current.addEventListener('scroll', (event) => {
+        const element = event.target as HTMLDivElement;
+        if (element.scrollLeft > 0) {
+          setProductIdx(Math.floor(element.scrollLeft / (window.innerWidth / 3)));
+        }
+      });
+    }
+  }, [listRef.current?.scrollLeft]);
 
   return (
     <div
@@ -72,7 +83,7 @@ function App() {
               setCursor(index);
             }
           }}>
-          {index >= 0 && index <= 3 && (
+          {index >= productIdx - 4 && index <= productIdx + 1 && (
             <Product
               name={product.name}
               scale={product.scale}

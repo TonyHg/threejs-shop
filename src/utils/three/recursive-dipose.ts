@@ -17,6 +17,9 @@ function recursiveDispose(group: Object3D) {
         }
       }
     }
+    if (child.parent) {
+      child.parent.remove(child);
+    }
   });
 }
 
