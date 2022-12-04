@@ -97,6 +97,7 @@ const Product: React.FC<ProductProps> = ({
       state.descriptionCard.visible = true;
     } else {
       state.controls.reset();
+      state.controls.target.set(0, 1.5, 0);
       state.descriptionCard.visible = false;
     }
   }, [isSelected]);
@@ -178,7 +179,7 @@ const Product: React.FC<ProductProps> = ({
       controls.maxDistance = 8;
       controls.minPolarAngle = Math.PI / 2;
       controls.maxPolarAngle = Math.PI / 2;
-      controls.target.set(0, 1, 0);
+      controls.target.set(0, 1.5, 0);
 
       //#region LIGHTS
       const ambientLight = new AmbientLight(0xffffff, 0.1);
