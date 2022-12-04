@@ -1,21 +1,30 @@
 import { useEffect, useRef, useState } from 'react';
+import { Euler } from 'three';
 import './App.css';
 import Product from './components/products/product';
 
+interface Product {
+  id: number;
+  name: string;
+  scale?: number;
+  rotation?: Euler;
+  shouldTouchTheGround?: boolean;
+}
+
 function App() {
-  const products = [
-    { id: 1, name: 'japanese_mask' },
-    { id: 2, name: '2' },
-    { id: 3, name: '3' },
-    { id: 4, name: '4' },
-    { id: 5, name: '5' },
-    { id: 6, name: '6' },
-    { id: 7, name: '7' },
-    { id: 8, name: '8' },
-    { id: 9, name: '9' },
-    { id: 10, name: '10' },
-    { id: 11, name: '11' },
-    { id: 12, name: '12' },
+  const products: Product[] = [
+    { id: 1, name: 'japanese_mask', rotation: new Euler(0, -Math.PI) },
+    { id: 2, name: 'crystal_stone' },
+    { id: 3, name: 'futurist_drone', rotation: new Euler(0, -Math.PI / 2) },
+    { id: 4, name: 'mosquito_in_amber', scale: 0.02 },
+    { id: 5, name: 'ship_in_a_bottle', shouldTouchTheGround: true },
+    { id: 6, name: 'spider_tank', shouldTouchTheGround: true },
+    { id: 7, name: 'techno_watch' },
+    { id: 8, name: 'venice_mask', scale: 50 },
+    { id: 9, name: 'terrarium_bots', scale: 0.09, shouldTouchTheGround: true },
+    { id: 10, name: 'dark_scuba' },
+    { id: 11, name: 'cursed_gameboy', shouldTouchTheGround: true },
+    { id: 12, name: 'lord_inquisitor_skull', scale: 0.02 },
     { id: 13, name: '13' },
     { id: 14, name: '14' },
     { id: 15, name: '15' },
@@ -64,7 +73,15 @@ function App() {
               setCursor(index);
             }
           }}>
-          {index == 0 && <Product name={product.name} isSelected={viewSelected} />}
+          {index >= 0 && index <= 3 && (
+            <Product
+              name={product.name}
+              scale={product.scale}
+              rotation={product.rotation}
+              shouldTouchTheGround={product.shouldTouchTheGround}
+              isSelected={viewSelected}
+            />
+          )}
         </div>
       ))}
       {viewSelected && (
