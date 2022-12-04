@@ -8,7 +8,17 @@
     color: #fff;
 }
 
-
+.subtext-neon {
+    text-shadow:
+            0 0 4px #fff,
+            0 0 11px #fff,
+            0 0 19px #fff,
+            0 0 40px #9af,
+            0 0 80px #9af,
+            0 0 90px #9af,
+            0 0 100px #9af,
+            0 0 150px #9af;
+}
 /* Flickering animation */
 @keyframes flicker {
     0%, 18%, 22%, 25%, 53%, 57%, 100% {

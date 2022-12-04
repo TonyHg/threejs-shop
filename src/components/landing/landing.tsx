@@ -7,10 +7,13 @@ const Landing: React.FC<LandingProps> = ({ listRef }) => {
   return (
     <div className="flex h-full w-full justify-center items-center uppercase text-7xl relative select-none">
       <div className="uppercase flex flex-col font-bold justify-center items-center">
-        <span className="text-base">Welcome to the</span>
+        <span className="text-base subtext-neon">Welcome to</span>
         <h1>
-          <span className="text-neon">Black</span> <span className="text-neon-delay">Market</span>
+          <span className="text-neon">coruscent</span>
+          <span className="text-3xl subtext-neon">in</span>
+          <span className="text-neon-delay">Tenebris</span>
         </h1>
+        <span className="text-xl subtext-neon">Black Market</span>
       </div>
       <button
         onClick={() => {
