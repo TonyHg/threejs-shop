@@ -48,7 +48,7 @@ function App() {
       }`}
       ref={listRef}>
       <div className="flex grow-0 shrink-0 basis-auto h-full w-full">
-        <Landing />
+        <Landing listRef={listRef} />
       </div>
       {products.map((product, index) => (
         <div
