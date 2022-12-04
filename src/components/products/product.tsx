@@ -3,14 +3,12 @@ import React, { useEffect, useRef, useState } from 'react';
 import {
   AmbientLight,
   DirectionalLight,
-  DoubleSide,
   Fog,
   LineBasicMaterial,
   LineSegments,
   Mesh,
   MeshBasicMaterial,
   MeshPhysicalMaterial,
-  MeshStandardMaterial,
   PCFSoftShadowMap,
   PerspectiveCamera,
   PlaneGeometry,
@@ -23,13 +21,12 @@ import {
 } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry';
-import { ReflectorForSSRPass } from 'three/examples/jsm/objects/ReflectorForSSRPass';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
-import { SSRPass } from 'three/examples/jsm/postprocessing/SSRPass';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass';
 import loadGLTFModel from '../../utils/three/load-gltf-model';
 import recursiveDispose from '../../utils/three/recursive-dipose';
+import { Reflector } from 'three/examples/jsm/objects/Reflector';
 
 interface ProductProps {
   isSelected?: boolean;
@@ -162,27 +159,15 @@ const Product: React.FC<ProductProps> = ({ isSelected = false }) => {
       //#endregion
 
       //#region MESHES
-      const plane = new Mesh(
-        new PlaneGeometry(200, 200),
-        new MeshStandardMaterial({ color: 0x090524, side: DoubleSide })
-      );
-      plane.receiveShadow = true;
-      plane.rotateX(Math.PI / 2);
-      plane.position.set(0, -1, 0);
-      scene.add(plane);
-
-      const groundReflector = new ReflectorForSSRPass(new PlaneGeometry(20, 20), {
-        clipBias: 0.0003,
-        textureWidth: window.innerWidth,
-        textureHeight: window.innerHeight,
-        color: 0x888888,
-        useDepthTexture: true
+      const groundMirror = new Reflector(new PlaneGeometry(200, 200), {
+        clipBias: 0.003,
+        textureWidth: window.innerWidth * window.devicePixelRatio,
+        textureHeight: window.innerHeight * window.devicePixelRatio,
+        color: 0x3c424d
       });
-      groundReflector.material.depthWrite = false;
-      groundReflector.rotation.x = -Math.PI / 2;
-      groundReflector.position.y = -1;
-      groundReflector.receiveShadow = true;
-      scene.add(groundReflector);
+      groundMirror.position.y = -1.6;
+      groundMirror.rotateX(-Math.PI / 2);
+      scene.add(groundMirror);
 
       const glassMaterial = new MeshPhysicalMaterial({
         color: 0xff00ff,
@@ -233,17 +218,6 @@ const Product: React.FC<ProductProps> = ({ isSelected = false }) => {
       //#region EFFECTS
       const effectComposer = new EffectComposer(renderer);
       effectComposer.addPass(new RenderPass(scene, camera));
-
-      const ssrPass = new SSRPass({
-        renderer,
-        scene,
-        camera,
-        width: window.innerWidth,
-        height: window.innerHeight,
-        groundReflector: groundReflector,
-        selects: null
-      });
-      //effectComposer.addPass(ssrPass);
 
       const bloomPass = new UnrealBloomPass(
         new Vector2(window.innerWidth, window.innerHeight),
