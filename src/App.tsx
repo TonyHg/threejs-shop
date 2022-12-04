@@ -70,21 +70,29 @@ function App() {
         <>
           <button
             onClick={() => setViewSelected(false)}
-            className="absolute top-10 left-10 text-center rounded-lg bg-white text-black p-5">
-            back
+            className="absolute uppercase font-bold top-10 left-10 text-center rounded-lg p-5 button-neon border-0 hover:border-0">
+            <span className="mr-6">←</span> back
           </button>
           {cursor && cursor !== 0 && (
             <button
-              className="absolute top-1/2 left-10 h-20 w-20 bg-white text-black p-5 rounded-full"
+              className="absolute top-1/2 left-10 h-20 w-20 p-5 rounded-full button-neon"
               onClick={() => setCursor(cursor - 1)}>
-              &lt;
+              <img
+                className="text-white invert"
+                alt="go to previous product"
+                src="https://www.une-pause-a-signes.com/wp-content/plugins/photo-gallery/css/bwg-fonts/fonts/bwg-fonts-svg/angle-left-sm.svg"
+              />
             </button>
           )}
           {cursor != null && cursor !== products.length - 1 && (
             <button
-              className="absolute top-1/2 right-10 h-20 w-20 bg-white text-black p-5 rounded-full"
+              className="absolute top-1/2 right-10 h-20 w-20 p-5 rounded-full button-neon"
               onClick={() => setCursor(cursor + 1)}>
-              &gt;
+              <img
+                className="text-white invert"
+                alt="go to previous product"
+                src="https://www.une-pause-a-signes.com/wp-content/plugins/photo-gallery/css/bwg-fonts/fonts/bwg-fonts-svg/angle-right-sm.svg"
+              />
             </button>
           )}
         </>

@@ -19,6 +19,7 @@
             0 0 100px #9af,
             0 0 150px #9af;
 }
+
 /* Flickering animation */
 @keyframes flicker {
     0%, 18%, 22%, 25%, 53%, 57%, 100% {
@@ -36,4 +37,47 @@
     20%, 24%, 55% {
         text-shadow: none;
     }
+}
+
+/* Flickering animation */
+@keyframes flicker-border {
+    1%, 18%, 22%, 25%, 53%, 57%, 100% {
+        text-shadow:
+                0 0 2px #fff,
+                0 0 10px #9af;
+        border-color: #fff;
+        filter: drop-shadow(0 0 15px #fff) drop-shadow(0 0 50px #9af);
+    }
+
+    0%, 20%, 24%, 55% {
+        filter: none;
+        text-shadow: none;
+    }
+}
+
+.button-neon {
+    transition: all 0.2s ease-in-out;
+    border: 1px solid transparent;
+    border-radius:15px;
+    filter: drop-shadow(0 0 15px #fff) drop-shadow(0 0 50px #9af);
+    text-shadow:
+            0 0 2px #fff,
+            0 0 10px #9af;
+}
+
+.button-neon:hover {
+    animation: flicker-border 2.2s infinite alternate;
+    border: 4px solid #fff;
+}
+
+.button-neon-fast {
+    animation: flicker-border 1.7s infinite alternate;
+}
+
+.button-neon-default {
+    animation: flicker-border 2.2s infinite alternate;
+}
+
+.button-neon-slow {
+    animation: flicker-border 2.2s infinite alternate;
 }
