@@ -227,7 +227,7 @@ const Product: React.FC<ProductProps> = ({
       );
       plane.receiveShadow = true;
       plane.rotation.x = -Math.PI / 2;
-      plane.position.y = 0.1;
+      plane.position.y = 0.001;
       scene.add(plane);
 
       const groundMirror = new Reflector(new PlaneGeometry(200, 200), {
