@@ -9,6 +9,7 @@ import {
   Mesh,
   MeshBasicMaterial,
   MeshPhysicalMaterial,
+  MeshStandardMaterial,
   PCFSoftShadowMap,
   PerspectiveCamera,
   PlaneGeometry,
@@ -159,14 +160,28 @@ const Product: React.FC<ProductProps> = ({ isSelected = false }) => {
       //#endregion
 
       //#region MESHES
+      const plane = new Mesh(
+        new PlaneGeometry(100, 100),
+        new MeshStandardMaterial({
+          color: 0x485ba1,
+          transparent: true,
+          opacity: 0.3
+        })
+      );
+      plane.receiveShadow = true;
+      plane.rotation.x = -Math.PI / 2;
+      plane.position.y = -1.9;
+      scene.add(plane);
+
       const groundMirror = new Reflector(new PlaneGeometry(200, 200), {
         clipBias: 0.003,
         textureWidth: window.innerWidth * window.devicePixelRatio,
         textureHeight: window.innerHeight * window.devicePixelRatio,
-        color: 0x3c424d
+        color: 0x57668c
       });
-      groundMirror.position.y = -1.6;
+      groundMirror.position.y = -2;
       groundMirror.rotateX(-Math.PI / 2);
+      groundMirror.receiveShadow = true;
       scene.add(groundMirror);
 
       const glassMaterial = new MeshPhysicalMaterial({
