@@ -59,7 +59,7 @@ const Product: React.FC<ProductProps> = ({
   const refContainer = useRef(null);
   const [state, setState] = useState<CanvasState>();
   const [productModel, setProductModel] = useState<Group>();
-  const [clock, setClock] = useState<Clock>(new Clock());
+  const [clock] = useState<Clock>(new Clock());
   const [loading, setLoading] = useState(true);
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [animationFrameId, setAnimationFrameId] = useState<number>();
@@ -257,10 +257,10 @@ const Product: React.FC<ProductProps> = ({
       });
 
       const neon = new LineSegments(
-        new RingGeometry(2.5, 2.65, 100, 100),
+        new RingGeometry(2.0, 2.15, 100, 100),
         new LineBasicMaterial({ color: 'white', linewidth: 3 })
       );
-      neon.position.set(0, 1, -10);
+      neon.position.set(0, 1.8, -10);
       camera.add(neon);
 
       loadGLTFModel(
