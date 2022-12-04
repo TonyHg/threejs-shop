@@ -2,8 +2,10 @@ import * as TWEEN from '@tweenjs/tween.js';
 import React, { useEffect, useRef, useState } from 'react';
 import {
   AmbientLight,
+  Clock,
   DirectionalLight,
   Fog,
+  Group,
   LineBasicMaterial,
   LineSegments,
   Mesh,
@@ -33,6 +35,7 @@ interface ProductProps {
   name: string;
   scale?: number;
   shouldTouchTheGround?: boolean;
+  shouldFloat?: boolean;
   isSelected?: boolean;
 }
 
@@ -42,6 +45,7 @@ interface CanvasState {
   scene: Scene;
   camera: PerspectiveCamera;
   controls: OrbitControls;
+  effectComposer: EffectComposer;
   descriptionCard: Mesh;
 }
 
@@ -49,12 +53,33 @@ const Product: React.FC<ProductProps> = ({
   name,
   scale = 1,
   shouldTouchTheGround = false,
+  shouldFloat = true,
   isSelected = false
 }) => {
   const refContainer = useRef(null);
   const [state, setState] = useState<CanvasState>();
+  const [productModel, setProductModel] = useState<Group>();
+  const [clock, setClock] = useState<Clock>(new Clock());
   const [loading, setLoading] = useState(true);
   const [loadingProgress, setLoadingProgress] = useState(0);
+  const [animationFrameId, setAnimationFrameId] = useState<number>();
+
+  useEffect(() => {
+    if (state && shouldFloat && productModel !== undefined) {
+      if (animationFrameId) window.cancelAnimationFrame(animationFrameId);
+
+      animate(
+        clock,
+        state.renderer,
+        state.container,
+        state.scene,
+        state.camera,
+        state.controls,
+        state.effectComposer,
+        productModel
+      );
+    }
+  }, [productModel]);
 
   useEffect(() => {
     if (state === undefined) return;
@@ -94,12 +119,14 @@ const Product: React.FC<ProductProps> = ({
   }, [state?.camera, state?.descriptionCard]);
 
   function animate(
+    clock: Clock,
     renderer: WebGLRenderer,
     container: HTMLDivElement,
     scene: Scene,
     camera: PerspectiveCamera,
     controls: OrbitControls,
-    effectComposer: EffectComposer
+    effectComposer: EffectComposer,
+    productModel: Group | undefined
   ) {
     if (renderer === undefined) return;
     const scW = container.clientWidth;
@@ -108,13 +135,18 @@ const Product: React.FC<ProductProps> = ({
     camera.aspect = scW / scH;
     camera.updateProjectionMatrix();
 
+    if (shouldFloat && productModel !== undefined) {
+      productModel.position.y = Math.sin(clock.getElapsedTime() * 0.8) * 0.2 + 1.5;
+    }
     renderer?.setSize(scW, scH);
     effectComposer.setSize(scW, scH);
     effectComposer.render();
     controls.update();
     TWEEN.update();
-    window.requestAnimationFrame(() =>
-      animate(renderer, container, scene, camera, controls, effectComposer)
+    setAnimationFrameId(
+      window.requestAnimationFrame(() =>
+        animate(clock, renderer, container, scene, camera, controls, effectComposer, productModel)
+      )
     );
   }
 
@@ -240,6 +272,7 @@ const Product: React.FC<ProductProps> = ({
           receiveShadow: true,
           castShadow: true
         },
+        (model) => setProductModel(model),
         (xhr) => setLoadingProgress((xhr.loaded / xhr.total) * 100)
       ).then(() => {
         setLoading(false);
@@ -259,9 +292,9 @@ const Product: React.FC<ProductProps> = ({
       effectComposer.addPass(bloomPass);
       //#endregion
 
-      setState({ renderer, container, scene, camera, controls, descriptionCard });
+      setState({ renderer, container, scene, camera, controls, effectComposer, descriptionCard });
 
-      animate(renderer, container, scene, camera, controls, effectComposer);
+      animate(clock, renderer, container, scene, camera, controls, effectComposer, undefined);
     }
     return () => state?.renderer.dispose();
   }, [state?.renderer]);

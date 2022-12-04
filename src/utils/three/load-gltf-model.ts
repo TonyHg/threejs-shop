@@ -1,4 +1,4 @@
-import { Box3, Mesh, Scene } from 'three';
+import { Box3, Group, Mesh, Scene } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 async function loadGLTFModel(
@@ -10,6 +10,7 @@ async function loadGLTFModel(
     receiveShadow?: boolean;
     castShadow?: boolean;
   },
+  onSuccess: (group: Group) => void,
   onProgress?: (progress: ProgressEvent<EventTarget>) => void
 ) {
   const { receiveShadow, castShadow } = options;
@@ -34,8 +35,7 @@ async function loadGLTFModel(
           child.receiveShadow = receiveShadow ?? false;
         }
       });
-
-      return obj;
+      onSuccess(obj);
     },
     onProgress,
     function (error) {
