@@ -1,10 +1,15 @@
-import { Mesh, Scene } from 'three';
+import { Box3, Mesh, Scene } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 async function loadGLTFModel(
   scene: Scene,
   glbPath: string,
-  options: { receiveShadow: boolean; castShadow: boolean }
+  options: {
+    scale?: number;
+    shouldTouchTheGround?: boolean;
+    receiveShadow?: boolean;
+    castShadow?: boolean;
+  }
 ) {
   const { receiveShadow, castShadow } = options;
 
@@ -13,15 +18,19 @@ async function loadGLTFModel(
     glbPath,
     (gltf) => {
       const obj = gltf.scene;
-      obj.receiveShadow = receiveShadow;
-      obj.castShadow = castShadow;
+      obj.receiveShadow = receiveShadow ?? false;
+      obj.castShadow = castShadow ?? false;
+      if (options.scale) obj.scale.setScalar(options.scale);
       obj.rotateY(Math.PI);
+      const objBB = new Box3().setFromObject(obj);
+      if (options.shouldTouchTheGround) obj.position.y = -objBB.min.y;
+      else obj.position.y = -objBB.min.y + 0.2;
       scene.add(obj);
 
       obj.traverse(function (child) {
         if (child instanceof Mesh) {
-          child.castShadow = castShadow;
-          child.receiveShadow = receiveShadow;
+          child.castShadow = castShadow ?? false;
+          child.receiveShadow = receiveShadow ?? false;
         }
       });
 

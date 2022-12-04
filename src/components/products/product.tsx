@@ -31,6 +31,8 @@ import { Reflector } from 'three/examples/jsm/objects/Reflector';
 
 interface ProductProps {
   name: string;
+  scale?: number;
+  shouldTouchTheGround?: boolean;
   isSelected?: boolean;
 }
 
@@ -43,7 +45,12 @@ interface CanvasState {
   descriptionCard: Mesh;
 }
 
-const Product: React.FC<ProductProps> = ({ name, isSelected = false }) => {
+const Product: React.FC<ProductProps> = ({
+  name,
+  scale = 1,
+  shouldTouchTheGround = false,
+  isSelected = false
+}) => {
   const refContainer = useRef(null);
   const [state, setState] = useState<CanvasState>();
   const [loading, setLoading] = useState(true);
@@ -138,6 +145,7 @@ const Product: React.FC<ProductProps> = ({ name, isSelected = false }) => {
       controls.maxDistance = 8;
       controls.minPolarAngle = Math.PI / 2;
       controls.maxPolarAngle = Math.PI / 2;
+      controls.target.set(0, 1, 0);
 
       //#region LIGHTS
       const ambientLight = new AmbientLight(0xffffff, 0.1);
@@ -180,7 +188,6 @@ const Product: React.FC<ProductProps> = ({ name, isSelected = false }) => {
         textureHeight: window.innerHeight * window.devicePixelRatio,
         color: 0x57668c
       });
-      groundMirror.position.y = -2;
       groundMirror.rotateX(-Math.PI / 2);
       groundMirror.receiveShadow = true;
       scene.add(groundMirror);
@@ -224,6 +231,8 @@ const Product: React.FC<ProductProps> = ({ name, isSelected = false }) => {
       camera.add(neon);
 
       loadGLTFModel(scene, `products/models/${name}.glb`, {
+        scale: scale,
+        shouldTouchTheGround: shouldTouchTheGround,
         receiveShadow: true,
         castShadow: true
       }).then(() => {
