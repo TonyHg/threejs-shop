@@ -54,6 +54,7 @@ const Product: React.FC<ProductProps> = ({
   const refContainer = useRef(null);
   const [state, setState] = useState<CanvasState>();
   const [loading, setLoading] = useState(true);
+  const [loadingProgress, setLoadingProgress] = useState(0);
 
   useEffect(() => {
     if (state === undefined) return;
@@ -230,12 +231,17 @@ const Product: React.FC<ProductProps> = ({
       neon.position.set(0, 1, -10);
       camera.add(neon);
 
-      loadGLTFModel(scene, `products/models/${name}.glb`, {
-        scale: scale,
-        shouldTouchTheGround: shouldTouchTheGround,
-        receiveShadow: true,
-        castShadow: true
-      }).then(() => {
+      loadGLTFModel(
+        scene,
+        `products/models/${name}.glb`,
+        {
+          scale: scale,
+          shouldTouchTheGround: shouldTouchTheGround,
+          receiveShadow: true,
+          castShadow: true
+        },
+        (xhr) => setLoadingProgress((xhr.loaded / xhr.total) * 100)
+      ).then(() => {
         setLoading(false);
       });
       //#endregion
@@ -272,8 +278,10 @@ const Product: React.FC<ProductProps> = ({
   return (
     <div className="relative h-full w-full select-none" ref={refContainer}>
       {loading && (
-        <span className="text-white" style={{ position: 'absolute', left: '50%', top: '50%' }}>
-          Loading...
+        <span
+          className="text-white font-bold text-3xl"
+          style={{ position: 'absolute', left: '50%', top: '50%' }}>
+          {loadingProgress} %
         </span>
       )}
     </div>

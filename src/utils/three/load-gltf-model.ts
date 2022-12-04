@@ -9,7 +9,8 @@ async function loadGLTFModel(
     shouldTouchTheGround?: boolean;
     receiveShadow?: boolean;
     castShadow?: boolean;
-  }
+  },
+  onProgress?: (progress: ProgressEvent<EventTarget>) => void
 ) {
   const { receiveShadow, castShadow } = options;
 
@@ -36,7 +37,7 @@ async function loadGLTFModel(
 
       return obj;
     },
-    undefined,
+    onProgress,
     function (error) {
       console.log(error);
     }
