@@ -34,7 +34,7 @@ function App() {
   ];
   const [viewSelected, setViewSelected] = useState(false);
   const [cursor, setCursor] = useState<number | undefined>();
-  const listRef = useHorizontalScroll();
+  const listRef = useHorizontalScroll(viewSelected);
   const [productIdx, setProductIdx] = useState(0);
 
   useEffect(() => {

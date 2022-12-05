@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 
-export function useHorizontalScroll() {
+export function useHorizontalScroll(viewSelected: boolean) {
   const elementRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const element = elementRef.current;
@@ -10,9 +10,9 @@ export function useHorizontalScroll() {
         event.preventDefault();
         element.scrollBy(event.deltaY, 0);
       };
-      element.addEventListener('wheel', onWheel);
+      if (!viewSelected) element.addEventListener('wheel', onWheel);
       return () => element.removeEventListener('wheel', onWheel);
     }
-  }, []);
+  }, [viewSelected]);
   return elementRef;
 }
