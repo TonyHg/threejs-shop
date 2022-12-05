@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Euler } from 'three';
 import './App.css';
-import Product from './components/products/product';
 import Landing from './components/landing/landing';
+import Product from './components/products/product';
+import { useHorizontalScroll } from './hooks/use-horizontal-scroll';
 
 interface Product {
   id: number;
@@ -33,7 +34,7 @@ function App() {
   ];
   const [viewSelected, setViewSelected] = useState(false);
   const [cursor, setCursor] = useState<number | undefined>();
-  const listRef = useRef<HTMLDivElement>(null);
+  const listRef = useHorizontalScroll();
   const [productIdx, setProductIdx] = useState(0);
 
   useEffect(() => {
