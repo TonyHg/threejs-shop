@@ -26,7 +26,7 @@ function App() {
     { id: 10, name: 'yellow_gameboy', scale: 1.7 },
     { id: 11, name: 'mysterious_book', scale: 0.01, rotation: new Euler(0, 0, Math.PI / 3) },
     { id: 12, name: 'terrarium_bots', scale: 0.1, shouldTouchTheGround: true },
-    { id: 13, name: 'steampunk_gun', scale: 0.07 },
+    { id: 13, name: 'futuristic_gun', scale: 0.004, shouldTouchTheGround: true },
     { id: 14, name: 'mayan_column', scale: 0.25, shouldTouchTheGround: true },
     { id: 15, name: 'jade_sword', scale: 0.05 },
     { id: 16, name: 'stone_coffin', scale: 0.02, rotation: new Euler(-Math.PI / 2.5) }
