@@ -5,10 +5,20 @@ interface LandingProps {
 }
 const Landing: React.FC<LandingProps> = ({ listRef }) => {
   return (
-    <div className="flex h-full w-full justify-center items-center uppercase text-7xl relative select-none">
+    <div className="flex h-full w-full justify-center items-center uppercase relative select-none">
+      <header>
+        <div className="absolute top-10 left-10 button-neon-slow">
+          <a
+            href="https://www.epita.fr/diplome-ingenieur/cycle-ingenieur/les-majeures/"
+            target="_blank"
+            rel="noreferrer">
+            <img src="/images/mti.svg" className="w-24" alt="Epita MTI 2023" />
+          </a>
+        </div>
+      </header>
       <div className="uppercase flex flex-col font-bold justify-center items-center">
-        <span className="text-base subtext-neon">Welcome to</span>
-        <h1>
+        <span className="text-base subtext-neon z-10">Welcome to</span>
+        <h1 className="text-7xl">
           <span className="text-neon">coruscent</span>
           <span className="text-3xl subtext-neon">in</span>
           <span className="text-neon-delay">Tenebris</span>
@@ -19,7 +29,7 @@ const Landing: React.FC<LandingProps> = ({ listRef }) => {
         onClick={() => {
           listRef.current?.scrollTo({ left: window.innerWidth, behavior: 'smooth' });
         }}
-        className="absolute right-16 top-1/2 flex flex-col justify-center items-center gap-2 animate-pulse">
+        className="absolute right-16 top-1/2 transform -translate-y-1/2 flex flex-col justify-center items-center gap-2 button-neon-fast">
         <img src="/icons/icon_right.svg" alt="scroll right" className="w-16" />
         <span className="uppercase text-2xl font-bold">Scroll</span>
       </button>
@@ -30,7 +40,7 @@ const Landing: React.FC<LandingProps> = ({ listRef }) => {
           target="_blank"
           rel="noreferrer">
           <div className="flex gap-2 justify-start items-center text-xs">
-            <img src="/images/github.png" alt="github" className="w-4" />
+            <img src="/icons/github.svg" alt="github" className="w-4 button-neon-default" />
             <h2 className="text-xs font-bold text-neon">GitHub</h2>
           </div>
           <img src="/images/authors.png" alt="Authors: Tony Heng, Melchior Lozé" className="w-24" />
