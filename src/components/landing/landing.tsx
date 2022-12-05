@@ -29,12 +29,8 @@ const Landing: React.FC<LandingProps> = ({ listRef }) => {
           href="https://github.com/TonyHg/threejs-shop"
           target="_blank"
           rel="noreferrer">
-          <div className="flex gap-2 justify-start items-center">
-            <img
-              src="https://cdn.icon-icons.com/icons2/2429/PNG/512/github_logo_icon_147285.png"
-              alt="github"
-              className="w-4"
-            />
+          <div className="flex gap-2 justify-start items-center text-xs">
+            <img src="/images/github.png" alt="github" className="w-4" />
             <h2 className="text-xs font-bold text-neon">GitHub</h2>
           </div>
           <img src="/images/authors.png" alt="Authors: Tony Heng, Melchior Lozé" className="w-24" />
