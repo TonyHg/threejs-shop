@@ -101,7 +101,7 @@ const Product: React.FC<ProductProps> = ({
       state.controls.target.set(0, 1.5, 0);
       state.descriptionCard.visible = false;
     }
-  }, [isSelected]);
+  }, [state, isSelected]);
 
   useEffect(() => {
     const onMouseMoveCard = (event: MouseEvent) => {
@@ -311,7 +311,9 @@ const Product: React.FC<ProductProps> = ({
         const passes = state.effectComposer.passes;
         for (let i = state.effectComposer.passes.length - 1; i >= 0; --i) {
           const p = passes[i];
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           if ((p as any).dispose) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (p as any).dispose();
           }
           state.effectComposer.removePass(p);
