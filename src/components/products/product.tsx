@@ -307,11 +307,19 @@ const Product: React.FC<ProductProps> = ({
   useEffect(() => {
     return () => {
       if (state) {
-        // recursiveDispose(state.scene);
-        state.scene.clear();
         state.controls.dispose();
+        const passes = state.effectComposer.passes;
+        for (let i = state.effectComposer.passes.length - 1; i >= 0; --i) {
+          const p = passes[i];
+          if ((p as any).dispose) {
+            (p as any).dispose();
+          }
+          state.effectComposer.removePass(p);
+        }
         state.effectComposer.dispose();
         state.renderer.dispose();
+        // state.scene.clear();
+        recursiveDispose(state.scene);
       }
     };
   }, [state]);
