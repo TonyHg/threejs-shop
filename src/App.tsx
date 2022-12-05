@@ -35,7 +35,7 @@ function App() {
   const [viewSelected, setViewSelected] = useState(false);
   const [cursor, setCursor] = useState<number | undefined>();
   const listRef = useHorizontalScroll(viewSelected);
-  const [productIdx, setProductIdx] = useState(0);
+  const [productIdx, setProductIdx] = useState(1);
 
   useEffect(() => {
     location.hash = '';
@@ -56,7 +56,7 @@ function App() {
       listRef.current.addEventListener('scroll', (event) => {
         const element = event.target as HTMLDivElement;
         if (element.scrollLeft > 0) {
-          setProductIdx(Math.floor(element.scrollLeft / (window.innerWidth / 3)));
+          setProductIdx(Math.max(1, Math.floor(element.scrollLeft / (window.innerWidth / 3))));
         }
       });
     }
