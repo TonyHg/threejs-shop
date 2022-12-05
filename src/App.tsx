@@ -63,7 +63,7 @@ function App() {
 
   return (
     <div
-      className={`flex flex-nowrap h-screen w-screen bg-black ${
+      className={`flex flex-nowrap h-screen w-screen bg-[#080808] ${
         viewSelected ? 'overflow-x-hidden' : 'overflow-x-auto'
       }`}
       ref={listRef}>
@@ -83,7 +83,11 @@ function App() {
               setCursor(index);
             }
           }}>
-          {index >= productIdx - 4 && index <= productIdx + 1 && (
+          {((!viewSelected && index >= productIdx - 4 && index <= productIdx + 1) ||
+            (viewSelected &&
+              cursor !== undefined &&
+              index >= cursor - 1 &&
+              index <= cursor + 1)) && (
             <Product
               name={product.name}
               scale={product.scale}
