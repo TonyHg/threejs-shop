@@ -1,4 +1,3 @@
-import * as TWEEN from '@tweenjs/tween.js';
 import React, { useEffect, useRef, useState } from 'react';
 import {
   AmbientLight,
@@ -88,15 +87,6 @@ const Product: React.FC<ProductProps> = ({
     if (state === undefined) return;
     state.controls.enabled = isSelected;
     if (isSelected) {
-      const coords = { z: 10 };
-      new TWEEN.Tween(coords)
-        .to({ z: 4 }, 250)
-        .easing(TWEEN.Easing.Quadratic.Out)
-        .onUpdate(() => {
-          state.camera.position.z = coords.z;
-        })
-        .start();
-
       state.descriptionCard.visible = true;
     } else {
       state.controls.reset();
@@ -147,7 +137,6 @@ const Product: React.FC<ProductProps> = ({
     effectComposer.setSize(scW, scH);
     effectComposer.render();
     controls.update();
-    TWEEN.update();
     setAnimationFrameId(
       window.requestAnimationFrame(() =>
         animate(
