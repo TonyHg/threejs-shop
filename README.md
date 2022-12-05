@@ -21,7 +21,7 @@ npm run dev # or yarn dev
 ## Deployment
 The application is deployed on [Vercel](https://vercel.com/).
 
-Access the live version [here](https://https://coruscent-in-tenebris.vercel.app/).
+Access the live version [here](https://coruscent-in-tenebris.vercel.app/).
  
 
 ## Authors
