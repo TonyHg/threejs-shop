@@ -196,7 +196,7 @@ const Product: React.FC<ProductProps> = ({
       controls.target.set(0, 1.5, 0);
 
       //#region LIGHTS
-      const ambientLight = new AmbientLight(0xffffff, 0.1);
+      const ambientLight = new AmbientLight(0xffffff, 0.4);
       scene.add(ambientLight);
 
       const directionalLight = new DirectionalLight(0xffffff, 0.5);
