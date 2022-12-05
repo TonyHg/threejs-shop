@@ -31,10 +31,10 @@ function App() {
     { id: 15, name: 'jade_sword', scale: 0.05 },
     { id: 16, name: 'stone_coffin', scale: 0.02, rotation: new Euler(-Math.PI / 2.5) }
   ];
-
   const [viewSelected, setViewSelected] = useState(false);
   const [cursor, setCursor] = useState<number | undefined>();
   const listRef = useRef<HTMLDivElement>(null);
+  const [productIdx, setProductIdx] = useState(0);
 
   useEffect(() => {
     location.hash = '';
@@ -50,9 +50,20 @@ function App() {
     }
   }, [viewSelected, cursor]);
 
+  useEffect(() => {
+    if (listRef.current !== null) {
+      listRef.current.addEventListener('scroll', (event) => {
+        const element = event.target as HTMLDivElement;
+        if (element.scrollLeft > 0) {
+          setProductIdx(Math.floor(element.scrollLeft / (window.innerWidth / 3)));
+        }
+      });
+    }
+  }, [listRef.current?.scrollLeft]);
+
   return (
     <div
-      className={`flex flex-nowrap h-screen w-screen bg-black ${
+      className={`flex flex-nowrap h-screen w-screen bg-[#080808] ${
         viewSelected ? 'overflow-x-hidden' : 'overflow-x-auto'
       }`}
       ref={listRef}>
@@ -72,7 +83,11 @@ function App() {
               setCursor(index);
             }
           }}>
-          {index === cursor && (
+          {((!viewSelected && index >= productIdx - 4 && index <= productIdx + 1) ||
+            (viewSelected &&
+              cursor !== undefined &&
+              index >= cursor - 1 &&
+              index <= cursor + 1)) && (
             <Product
               name={product.name}
               scale={product.scale}

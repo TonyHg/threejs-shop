@@ -2,7 +2,7 @@ import { Mesh, Object3D } from 'three';
 
 function recursiveDispose(group: Object3D) {
   group.traverse((child) => {
-    recursiveDispose(child);
+    // recursiveDispose(child);
     if (child instanceof Mesh) {
       child.geometry?.dispose();
       if (child.material) {

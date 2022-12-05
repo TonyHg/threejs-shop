@@ -3,7 +3,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import {
   AmbientLight,
   Clock,
-  Color,
   DirectionalLight,
   Euler,
   Fog,
@@ -104,7 +103,7 @@ const Product: React.FC<ProductProps> = ({
       state.controls.target.set(0, 1.5, 0);
       state.descriptionCard.visible = false;
     }
-  }, [isSelected]);
+  }, [state, isSelected]);
 
   useEffect(() => {
     const onMouseMoveCard = (event: MouseEvent) => {
@@ -197,7 +196,7 @@ const Product: React.FC<ProductProps> = ({
       controls.target.set(0, 1.5, 0);
 
       //#region LIGHTS
-      const ambientLight = new AmbientLight(0xffffff, 0.1);
+      const ambientLight = new AmbientLight(0xffffff, 0.4);
       scene.add(ambientLight);
 
       const directionalLight = new DirectionalLight(0xffffff, 0.5);
@@ -308,6 +307,7 @@ const Product: React.FC<ProductProps> = ({
 
       //#region EFFECTS
       const effectComposer = new EffectComposer(renderer);
+      effectComposer.setSize(window.innerWidth, window.innerHeight);
       effectComposer.addPass(new RenderPass(scene, camera));
 
       const bloomPass = new UnrealBloomPass(
@@ -339,11 +339,25 @@ const Product: React.FC<ProductProps> = ({
   // ON UNMOUNT
   useEffect(() => {
     return () => {
-      state?.renderer.dispose();
-      if (state?.scene) recursiveDispose(state.scene);
-      state?.controls.dispose();
+      if (state) {
+        state.controls.dispose();
+        const passes = state.effectComposer.passes;
+        for (let i = state.effectComposer.passes.length - 1; i >= 0; --i) {
+          const p = passes[i];
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          if ((p as any).dispose) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (p as any).dispose();
+          }
+          state.effectComposer.removePass(p);
+        }
+        state.effectComposer.dispose();
+        state.renderer.dispose();
+        // state.scene.clear();
+        recursiveDispose(state.scene);
+      }
     };
-  }, []);
+  }, [state]);
 
   return (
     <div className="relative h-full w-full select-none" ref={refContainer}>
