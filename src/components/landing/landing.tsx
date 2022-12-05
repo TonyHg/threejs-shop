@@ -40,6 +40,7 @@ const Landing: React.FC<LandingProps> = ({ listRef }) => {
           <img src="/images/authors.png" alt="Authors: Tony Heng, Melchior Lozé" className="w-24" />
         </a>
       </footer>
+      <div className="absolute right-0 h-full border-4 border-transparent button-neon-slow z-50"></div>
     </div>
   );
 };
