@@ -1,5 +1,8 @@
 # Coruscent in Tenebris - The Black Market
 
+![](https://media.giphy.com/media/XgMFnfWpRZEsgzXKUI/giphy.gif)
+![](https://media.discordapp.net/attachments/953642269729247242/1049380348737360012/image.png?width=1388&height=663)
+
 This is a repository for the Coruscent in Tenebris - The Black Market, a React.js based web application using Three.js.
 
 ## Getting started
