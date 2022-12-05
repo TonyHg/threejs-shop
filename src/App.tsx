@@ -16,20 +16,20 @@ function App() {
   const products: Product[] = [
     { id: 1, name: 'japanese_mask', scale: 1.5, rotation: new Euler(0, -Math.PI) },
     { id: 2, name: 'crystal_stone', scale: 50 },
-    { id: 3, name: 'covid_pills', scale: 10 },
-    { id: 4, name: 'apollos_shield' },
-    { id: 5, name: 'time_orb' },
-    { id: 6, name: 'spider_tank', scale: 0.01, shouldTouchTheGround: true },
+    { id: 3, name: 'buster_drone', scale: 1.5 },
+    { id: 4, name: 'cursed_pumpkin', scale: 5 },
+    { id: 5, name: 'nagitana_spear', scale: 0.015, rotation: new Euler(0, 0, Math.PI / 3) },
+    { id: 6, name: 'spider_tank', scale: 0.012, shouldTouchTheGround: true },
     { id: 7, name: 'venice_mask', scale: 50 },
     { id: 8, name: 'techno_watch', rotation: new Euler(0, 0, -Math.PI / 3) },
     { id: 9, name: 'scepter', scale: 0.005 },
-    { id: 10, name: 'yellow_gameboy', scale: 1.7 },
+    { id: 10, name: 'futuristic_gun', scale: 0.004, shouldTouchTheGround: true },
     { id: 11, name: 'mysterious_book', scale: 0.01, rotation: new Euler(0, 0, Math.PI / 3) },
     { id: 12, name: 'terrarium_bots', scale: 0.1, shouldTouchTheGround: true },
-    { id: 13, name: 'futuristic_gun', scale: 0.004, shouldTouchTheGround: true },
+    { id: 13, name: 'yellow_gameboy', scale: 1.7 },
     { id: 14, name: 'mayan_column', scale: 0.25, shouldTouchTheGround: true },
     { id: 15, name: 'jade_sword', scale: 0.05 },
-    { id: 16, name: 'stone_coffin', scale: 0.02, rotation: new Euler(-Math.PI / 2.5) }
+    { id: 16, name: 'mysterious_chest', scale: 2, shouldTouchTheGround: true }
   ];
   const [viewSelected, setViewSelected] = useState(false);
   const [cursor, setCursor] = useState<number | undefined>();
