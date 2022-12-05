@@ -64,7 +64,7 @@ function App() {
 
   return (
     <div
-      className={`flex flex-nowrap h-screen w-screen bg-[#080808] ${
+      className={`hide-scroll-bar flex flex-nowrap h-screen w-screen bg-[#080808] ${
         viewSelected ? 'overflow-x-hidden' : 'overflow-x-auto'
       }`}
       ref={listRef}>
