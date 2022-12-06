@@ -81,3 +81,13 @@
 .button-neon-slow {
     animation: flicker-border 2.2s infinite alternate;
 }
+
+.hide-scroll-bar::-webkit-scrollbar {
+    display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.hide-scroll-bar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
